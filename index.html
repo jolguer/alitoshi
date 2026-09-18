@@ -1156,172 +1156,24 @@ function formatDate(d) {
 
 function easeInOutCubic(t) { return t < .5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2; }
 
-// ── Shared drawing utils ──
-function drawRoom(ctx, W, H, opts) {
-  const { wallColor, floorColor, floorY, shadowAlpha } = opts;
-  // Wall
-  ctx.fillStyle = wallColor;
-  ctx.fillRect(0, 0, W, floorY);
-  // Floor
-  ctx.fillStyle = floorColor;
-  ctx.fillRect(0, floorY, W, H - floorY);
-  // Floor line
-  ctx.strokeStyle = 'rgba(0,0,0,0.06)';
-  ctx.lineWidth = 1.5;
-  ctx.beginPath(); ctx.moveTo(0, floorY); ctx.lineTo(W, floorY); ctx.stroke();
-}
-
-function drawWallFrame(ctx, x, y, w, h) {
-  // Decorative frame on wall
-  ctx.strokeStyle = 'rgba(0,0,0,0.08)';
-  ctx.lineWidth = 1.5;
-  const r = 4;
-  ctx.beginPath();
-  ctx.roundRect(x, y, w, h, r);
-  ctx.stroke();
-  // Inner line art
-  ctx.strokeStyle = 'rgba(0,0,0,0.04)';
-  ctx.beginPath();
-  ctx.moveTo(x + w*0.2, y + h*0.3);
-  ctx.lineTo(x + w*0.8, y + h*0.3);
-  ctx.moveTo(x + w*0.3, y + h*0.5);
-  ctx.lineTo(x + w*0.7, y + h*0.5);
-  ctx.moveTo(x + w*0.25, y + h*0.7);
-  ctx.lineTo(x + w*0.75, y + h*0.7);
-  ctx.stroke();
-}
-
-function drawPlant(ctx, x, y, scale) {
-  ctx.save();
-  ctx.translate(x, y);
-  ctx.scale(scale, scale);
-  // Pot
-  ctx.fillStyle = '#C8B8A0';
-  ctx.beginPath();
-  ctx.moveTo(-12, 0); ctx.lineTo(-9, 28); ctx.lineTo(9, 28); ctx.lineTo(12, 0);
-  ctx.closePath(); ctx.fill();
-  ctx.fillStyle = '#B8A890';
-  ctx.fillRect(-12, 0, 24, 4);
-  // Leaves
-  ctx.fillStyle = '#7A9A6D';
-  for (let a of [-40, -15, 10, 35]) {
-    ctx.save();
-    ctx.rotate(a * Math.PI/180);
+// ── Wood texture fill ──
+function fillWood(ctx, x, y, w, h, baseColor, grainColor, grainCount) {
+  ctx.fillStyle = baseColor;
+  ctx.fillRect(x, y, w, h);
+  ctx.strokeStyle = grainColor;
+  ctx.lineWidth = 0.6;
+  for (let i = 0; i < grainCount; i++) {
+    const gy = y + (h / (grainCount+1)) * (i+1) + (Math.sin(i*3.7)*2);
     ctx.beginPath();
-    ctx.ellipse(0, -24, 6, 18, 0, 0, Math.PI*2);
-    ctx.fill();
-    ctx.restore();
-  }
-  ctx.fillStyle = '#8FB07E';
-  for (let a of [-28, 0, 22]) {
-    ctx.save();
-    ctx.rotate(a * Math.PI/180);
-    ctx.beginPath();
-    ctx.ellipse(0, -30, 5, 14, 0, 0, Math.PI*2);
-    ctx.fill();
-    ctx.restore();
-  }
-  ctx.restore();
-}
-
-function drawChair(ctx, x, y, scale) {
-  ctx.save();
-  ctx.translate(x, y);
-  ctx.scale(scale, scale);
-  // Legs
-  ctx.strokeStyle = '#2A2A2A';
-  ctx.lineWidth = 3;
-  ctx.lineCap = 'round';
-  // Back legs
-  ctx.beginPath(); ctx.moveTo(-14, 0); ctx.lineTo(-16, 40); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(14, 0); ctx.lineTo(16, 40); ctx.stroke();
-  // Front legs
-  ctx.beginPath(); ctx.moveTo(-14, 18); ctx.lineTo(-18, 40); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(14, 18); ctx.lineTo(18, 40); ctx.stroke();
-  // Seat
-  ctx.fillStyle = '#1A1A1A';
-  ctx.beginPath();
-  ctx.roundRect(-16, 14, 32, 6, 2);
-  ctx.fill();
-  // Backrest
-  ctx.fillStyle = '#1A1A1A';
-  ctx.beginPath();
-  ctx.roundRect(-13, -6, 26, 22, [4,4,0,0]);
-  ctx.fill();
-  ctx.restore();
-}
-
-function drawDesk(ctx, wallX, wallY, deskW, deskH, angle, color, legLen) {
-  // angle: 0 = closed (flat against wall), 90 = fully open (horizontal)
-  const rad = angle * Math.PI / 180;
-  const hingeX = wallX;
-  const hingeY = wallY + deskH;
-
-  ctx.save();
-  ctx.translate(hingeX, hingeY);
-
-  // Shadow on floor when open
-  if (angle > 10) {
-    const shadowSpread = deskW * Math.cos(Math.PI/2 - rad) * 0.9;
-    const shadowY = legLen * (angle / 90);
-    ctx.fillStyle = `rgba(0,0,0,${0.06 * (angle/90)})`;
-    ctx.beginPath();
-    ctx.ellipse(deskW/2, shadowY + 6, shadowSpread/2 + 10, 6, 0, 0, Math.PI*2);
-    ctx.fill();
-  }
-
-  // Leg (support strut) — only visible when opening
-  if (angle > 5) {
-    const legAngle = Math.max(0, angle - 5);
-    const legRad = legAngle * Math.PI / 180;
-    const deskEndX = deskW * Math.sin(rad);
-    const deskEndY = deskW * Math.cos(rad) * -1 + deskW;
-    const actualLeg = legLen * (angle / 90);
-    ctx.strokeStyle = '#999';
-    ctx.lineWidth = 2.5;
-    ctx.beginPath();
-    ctx.moveTo(deskEndX * 0.85, -deskW * Math.cos(rad) + deskW * 0.85);
-    ctx.lineTo(deskEndX * 0.85, -deskW * Math.cos(rad) + deskW * 0.85 + actualLeg);
-    ctx.stroke();
-    // Small foot
-    ctx.fillStyle = '#999';
-    ctx.beginPath();
-    ctx.arc(deskEndX * 0.85, -deskW * Math.cos(rad) + deskW * 0.85 + actualLeg, 3, 0, Math.PI*2);
-    ctx.fill();
-  }
-
-  // Desk surface (rotates from hinge)
-  ctx.rotate(Math.PI/2 - rad);
-  // Thickness (side)
-  ctx.fillStyle = darken(color, 15);
-  ctx.fillRect(0, 0, deskW, 5);
-  // Top surface
-  ctx.fillStyle = color;
-  ctx.fillRect(0, -deskH, deskW, deskH);
-  // Subtle edge highlight
-  ctx.strokeStyle = 'rgba(255,255,255,0.3)';
-  ctx.lineWidth = 1;
-  ctx.strokeRect(0, -deskH, deskW, deskH);
-  // Subtle grain lines
-  ctx.strokeStyle = 'rgba(0,0,0,0.03)';
-  ctx.lineWidth = 0.5;
-  for (let i = 1; i < 6; i++) {
-    ctx.beginPath();
-    ctx.moveTo(deskW * 0.05, -deskH + (deskH/6)*i);
-    ctx.lineTo(deskW * 0.95, -deskH + (deskH/6)*i);
+    ctx.moveTo(x, gy);
+    const cp1x = x + w*0.3, cp1y = gy + Math.sin(i*1.3)*3;
+    const cp2x = x + w*0.7, cp2y = gy - Math.sin(i*2.1)*2;
+    ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x+w, gy + Math.sin(i*0.7)*2);
     ctx.stroke();
   }
-
-  ctx.restore();
 }
 
-function darken(hex, amt) {
-  let r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
-  r = Math.max(0,r-amt); g = Math.max(0,g-amt); b = Math.max(0,b-amt);
-  return `rgb(${r},${g},${b})`;
-}
-
-// ── HERO CANVAS: Room scene with desk folding ──
+// ── HERO CANVAS: 3D isometric product ──
 (function initHeroCanvas() {
   const canvas = document.getElementById('heroCanvas');
   if (!canvas) return;
@@ -1337,114 +1189,328 @@ function darken(hex, amt) {
   resize();
   window.addEventListener('resize', resize);
 
-  const CYCLE = 6000; // ms for full open-pause-close-pause
+  const CYCLE = 7000;
   let start = performance.now();
+
+  // Colors
+  const WOOD = '#6B5140';
+  const WOOD_LIGHT = '#8B7060';
+  const WOOD_DARK = '#4A3628';
+  const WOOD_GRAIN = 'rgba(0,0,0,0.06)';
+  const EDGE_WHITE = '#F0EDE8';
+  const SHELF_BG = '#5A4435';
+  const MONITOR_FRAME = '#1A1A1A';
+  const MONITOR_SCREEN_L = '#7C8FA0';
+  const MONITOR_SCREEN_R = '#C49585';
+  const LAPTOP_BODY = '#888';
+
+  function drawProduct(ctx, W, H, angle) {
+    // angle: 0=closed, 90=open
+    const cx = W * 0.5;
+    const baseY = H * 0.88;
+    const scale = Math.min(W / 600, H / 380);
+
+    ctx.save();
+    ctx.translate(cx, baseY);
+    ctx.scale(scale, scale);
+
+    const panelW = 280;
+    const panelH = 180;
+    const deskD = 170; // desk depth when open
+    const deskThick = 6;
+    const hingeY = 0; // bottom of back panel = hinge point
+    const rad = angle * Math.PI / 180;
+
+    // ── Shadow on "wall" ──
+    if (angle < 80) {
+      ctx.fillStyle = `rgba(0,0,0,${0.04 * (1 - angle/90)})`;
+      ctx.fillRect(-panelW/2 - 8, -panelH - 8, panelW + 16, panelH + 16);
+    }
+
+    // ── BACK PANEL (always visible, on "wall") ──
+    // Main panel
+    ctx.fillStyle = WOOD;
+    ctx.beginPath();
+    ctx.roundRect(-panelW/2, -panelH, panelW, panelH, [4,4,0,0]);
+    ctx.fill();
+    // Wood grain on panel
+    ctx.strokeStyle = WOOD_GRAIN;
+    ctx.lineWidth = 0.7;
+    for (let i = 0; i < 12; i++) {
+      const gy = -panelH + (panelH/13)*(i+1);
+      ctx.beginPath();
+      ctx.moveTo(-panelW/2 + 4, gy + Math.sin(i*2.3)*2);
+      ctx.bezierCurveTo(-panelW/4, gy+Math.sin(i)*3, panelW/4, gy-Math.sin(i*1.5)*2, panelW/2-4, gy+Math.sin(i*0.8));
+      ctx.stroke();
+    }
+    // Top edge (darker)
+    ctx.fillStyle = WOOD_DARK;
+    ctx.fillRect(-panelW/2, -panelH, panelW, 6);
+    // Side edges
+    ctx.fillStyle = WOOD_DARK;
+    ctx.fillRect(-panelW/2, -panelH, 5, panelH);
+    ctx.fillRect(panelW/2 - 5, -panelH, 5, panelH);
+
+    // ── SHELF COMPARTMENTS (3 slots) ──
+    const shelfY = -panelH + 14;
+    const shelfH = panelH * 0.35;
+    const shelfPad = 8;
+    const slotW = (panelW - shelfPad*4) / 3;
+
+    // Only visible when desk is partially/fully open
+    const shelfAlpha = Math.min(1, angle / 30);
+    if (shelfAlpha > 0) {
+      ctx.globalAlpha = shelfAlpha;
+      for (let i = 0; i < 3; i++) {
+        const sx = -panelW/2 + shelfPad + (slotW + shelfPad) * i;
+        ctx.fillStyle = SHELF_BG;
+        ctx.beginPath();
+        ctx.roundRect(sx, shelfY, slotW, shelfH, 3);
+        ctx.fill();
+        // Inner shadow
+        ctx.fillStyle = 'rgba(0,0,0,0.15)';
+        ctx.fillRect(sx, shelfY, slotW, 3);
+      }
+
+      // ── MONITORS on back panel ──
+      if (angle > 20) {
+        const monAlpha = Math.min(1, (angle - 20) / 30);
+        ctx.globalAlpha = monAlpha;
+        const monW = panelW * 0.4;
+        const monH = panelH * 0.36;
+        const monY = shelfY + shelfH + 8;
+        const gap = 8;
+
+        // Left monitor
+        const lmx = -gap/2 - monW;
+        ctx.fillStyle = MONITOR_FRAME;
+        ctx.beginPath(); ctx.roundRect(lmx, monY, monW, monH, 3); ctx.fill();
+        // Screen with abstract art (matching product image)
+        const screenPad = 3;
+        const gradient1 = ctx.createLinearGradient(lmx, monY, lmx+monW, monY+monH);
+        gradient1.addColorStop(0, '#7C8FA0');
+        gradient1.addColorStop(0.4, '#A0B0BC');
+        gradient1.addColorStop(0.7, '#D4836B');
+        gradient1.addColorStop(1, '#C06040');
+        ctx.fillStyle = gradient1;
+        ctx.fillRect(lmx+screenPad, monY+screenPad, monW-screenPad*2, monH-screenPad*2);
+        // Wave shapes on screen
+        ctx.fillStyle = 'rgba(180,90,60,0.4)';
+        ctx.beginPath();
+        ctx.moveTo(lmx+screenPad, monY+monH*0.6);
+        ctx.quadraticCurveTo(lmx+monW*0.4, monY+monH*0.3, lmx+monW*0.6, monY+monH*0.7);
+        ctx.quadraticCurveTo(lmx+monW*0.8, monY+monH, lmx+monW-screenPad, monY+monH*0.5);
+        ctx.lineTo(lmx+monW-screenPad, monY+monH-screenPad);
+        ctx.lineTo(lmx+screenPad, monY+monH-screenPad);
+        ctx.fill();
+        // "ALITOSHI" logo on left screen
+        ctx.fillStyle = 'rgba(255,255,255,0.9)';
+        ctx.font = `bold ${Math.max(8, monW*0.09)}px Inter, sans-serif`;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('ALITOSHI', lmx+screenPad+8, monY+monH*0.35);
+
+        // Right monitor
+        const rmx = gap/2;
+        ctx.fillStyle = MONITOR_FRAME;
+        ctx.beginPath(); ctx.roundRect(rmx, monY, monW, monH, 3); ctx.fill();
+        const gradient2 = ctx.createLinearGradient(rmx, monY, rmx+monW, monY+monH);
+        gradient2.addColorStop(0, '#A0B0BC');
+        gradient2.addColorStop(0.3, '#D4A090');
+        gradient2.addColorStop(0.6, '#C09080');
+        gradient2.addColorStop(1, '#B0C0CC');
+        ctx.fillStyle = gradient2;
+        ctx.fillRect(rmx+screenPad, monY+screenPad, monW-screenPad*2, monH-screenPad*2);
+        ctx.fillStyle = 'rgba(100,130,160,0.35)';
+        ctx.beginPath();
+        ctx.moveTo(rmx+screenPad, monY+monH*0.4);
+        ctx.quadraticCurveTo(rmx+monW*0.3, monY+monH*0.7, rmx+monW*0.5, monY+monH*0.3);
+        ctx.quadraticCurveTo(rmx+monW*0.7, monY, rmx+monW-screenPad, monY+monH*0.5);
+        ctx.lineTo(rmx+monW-screenPad, monY+screenPad);
+        ctx.lineTo(rmx+screenPad, monY+screenPad);
+        ctx.fill();
+
+        // Cable hint between monitors
+        ctx.strokeStyle = 'rgba(0,0,0,0.2)';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(0, monY+monH);
+        ctx.quadraticCurveTo(5, monY+monH+15, 0, monY+monH+20);
+        ctx.stroke();
+      }
+      ctx.globalAlpha = 1;
+    }
+    ctx.globalAlpha = 1;
+
+    // ── DESK SURFACE (folds from hinge) ──
+    ctx.save();
+    // Hinge is at bottom of back panel (y=0)
+    // When closed: desk is vertical (against panel)
+    // When open: desk is horizontal (flat)
+    const deskRotation = (90 - angle) * Math.PI / 180;
+
+    // 3D perspective simulation for the desk
+    const deskVisibleH = deskD * Math.sin(rad); // how far desk extends
+    const deskVisibleCompression = Math.cos(rad) * 0.6 + 0.4; // foreshortening
+
+    if (angle > 2) {
+      // Shadow under desk
+      const shadowAlpha = 0.08 * (angle/90);
+      ctx.fillStyle = `rgba(0,0,0,${shadowAlpha})`;
+      ctx.beginPath();
+      ctx.ellipse(0, deskVisibleH + 8, panelW/2 + 10, 8, 0, 0, Math.PI*2);
+      ctx.fill();
+
+      // Desk surface (trapezoid for perspective)
+      const topW = panelW; // width at hinge
+      const botW = panelW * (1 + angle/400); // slightly wider at front
+      const botHalf = botW / 2;
+      const topHalf = topW / 2;
+
+      // White edge (bottom/front of desk)
+      ctx.fillStyle = EDGE_WHITE;
+      ctx.beginPath();
+      ctx.moveTo(-topHalf, 0);
+      ctx.lineTo(topHalf, 0);
+      ctx.lineTo(botHalf, deskVisibleH);
+      ctx.lineTo(-botHalf, deskVisibleH);
+      ctx.closePath();
+      ctx.fill();
+
+      // Wood surface (inset from edge)
+      const edgeW = 4;
+      ctx.fillStyle = WOOD_LIGHT;
+      ctx.beginPath();
+      ctx.moveTo(-topHalf+edgeW, edgeW*0.3);
+      ctx.lineTo(topHalf-edgeW, edgeW*0.3);
+      ctx.lineTo(botHalf-edgeW, deskVisibleH-edgeW*0.5);
+      ctx.lineTo(-botHalf+edgeW, deskVisibleH-edgeW*0.5);
+      ctx.closePath();
+      ctx.fill();
+
+      // Wood grain on desk
+      ctx.strokeStyle = 'rgba(0,0,0,0.04)';
+      ctx.lineWidth = 0.5;
+      for (let i = 0; i < 8; i++) {
+        const t = (i+1) / 9;
+        const ly = t * deskVisibleH;
+        const lw = topHalf + (botHalf - topHalf) * t;
+        ctx.beginPath();
+        ctx.moveTo(-lw+edgeW+5, ly + Math.sin(i*1.7)*1.5);
+        ctx.bezierCurveTo(-lw*0.3, ly+Math.sin(i)*2, lw*0.3, ly-Math.sin(i*1.2), lw-edgeW-5, ly+Math.sin(i*0.6));
+        ctx.stroke();
+      }
+
+      // ── LAPTOP on desk ──
+      if (angle > 60) {
+        const lapAlpha = Math.min(1, (angle-60)/25);
+        ctx.globalAlpha = lapAlpha;
+        const lapW = panelW * 0.28;
+        const lapH = deskVisibleH * 0.2;
+        const lapX = -lapW/2 + 10;
+        const lapY = deskVisibleH * 0.35;
+
+        // Laptop base
+        ctx.fillStyle = '#B0B0B0';
+        ctx.beginPath();
+        ctx.roundRect(lapX, lapY, lapW, lapH, 2);
+        ctx.fill();
+        // Laptop screen (tilted back)
+        const screenH = lapH * 2.5;
+        ctx.fillStyle = '#333';
+        ctx.beginPath();
+        ctx.roundRect(lapX + 2, lapY - screenH + 2, lapW - 4, screenH, [3,3,0,0]);
+        ctx.fill();
+        // Screen content
+        const lgr = ctx.createLinearGradient(lapX, lapY-screenH, lapX+lapW, lapY);
+        lgr.addColorStop(0, '#D4836B');
+        lgr.addColorStop(0.5, '#7C8FA0');
+        lgr.addColorStop(1, '#C06040');
+        ctx.fillStyle = lgr;
+        ctx.fillRect(lapX+5, lapY-screenH+5, lapW-14, screenH-8);
+
+        // Cable from laptop
+        ctx.strokeStyle = 'rgba(0,0,0,0.15)';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(lapX + lapW, lapY + lapH/2);
+        ctx.quadraticCurveTo(lapX+lapW+20, lapY+lapH, lapX+lapW+15, lapY-10);
+        ctx.stroke();
+
+        ctx.globalAlpha = 1;
+      }
+    }
+    ctx.restore();
+
+    // ── Hinge detail ──
+    ctx.fillStyle = 'rgba(0,0,0,0.15)';
+    ctx.fillRect(-panelW/2 + 20, -2, panelW - 40, 3);
+
+    // ── Side bracket (left) ──
+    if (angle > 10) {
+      const brackAlpha = Math.min(1, (angle-10)/20);
+      ctx.globalAlpha = brackAlpha;
+      ctx.strokeStyle = WOOD_DARK;
+      ctx.lineWidth = 3;
+      const bx = -panelW/2 - 2;
+      const by = -panelH * 0.3;
+      const bEndY = deskD * Math.sin(rad) * 0.7;
+      ctx.beginPath();
+      ctx.moveTo(bx, by);
+      ctx.lineTo(bx - 3, bEndY);
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+    }
+
+    ctx.restore();
+  }
 
   function draw(now) {
     const W = canvas.width / dpr;
     const H = canvas.height / dpr;
-    const floorY = H * 0.72;
     ctx.clearRect(0, 0, W, H);
 
-    // Room
-    drawRoom(ctx, W, H, {
-      wallColor: '#F5F3EE', floorColor: '#E8E4DC', floorY, shadowAlpha: 0.05
-    });
+    // Soft background
+    ctx.fillStyle = '#F0EFEB';
+    ctx.fillRect(0, 0, W, H);
 
-    // Wall details
-    drawWallFrame(ctx, W*0.06, H*0.08, W*0.18, H*0.28);
+    // Subtle wall/floor division
+    const floorY = H * 0.88;
+    ctx.fillStyle = '#E8E5DE';
+    ctx.fillRect(0, floorY, W, H - floorY);
+    ctx.strokeStyle = 'rgba(0,0,0,0.04)';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(0, floorY); ctx.lineTo(W, floorY); ctx.stroke();
 
-    // Plant
-    drawPlant(ctx, W*0.88, floorY - 2, Math.min(1, W/500));
-
-    // Desk animation
+    // Animation cycle
     const elapsed = (now - start) % CYCLE;
     let angle;
-    if (elapsed < 1200) {
-      // Opening
-      angle = easeInOutCubic(elapsed / 1200) * 90;
-    } else if (elapsed < 3200) {
-      // Open (pause)
+    if (elapsed < 1500) {
+      angle = easeInOutCubic(elapsed / 1500) * 90;
+    } else if (elapsed < 3800) {
       angle = 90;
-    } else if (elapsed < 4400) {
-      // Closing
-      angle = 90 - easeInOutCubic((elapsed - 3200) / 1200) * 90;
+    } else if (elapsed < 5300) {
+      angle = 90 - easeInOutCubic((elapsed - 3800) / 1500) * 90;
     } else {
-      // Closed (pause)
       angle = 0;
     }
 
-    const deskW = W * 0.38;
-    const deskH = H * 0.35;
-    const wallX = W * 0.30;
-    const wallY = floorY - deskH - H*0.06;
-    const legLen = floorY - (wallY + deskH) - 4;
-
-    drawDesk(ctx, wallX, wallY, deskW, deskH, angle, '#1A1A1A', legLen);
-
-    // Chair (appears/fades with desk)
-    const chairAlpha = angle > 60 ? Math.min(1, (angle-60)/30) : 0;
-    if (chairAlpha > 0) {
-      ctx.globalAlpha = chairAlpha;
-      drawChair(ctx, wallX + deskW*0.55, floorY - 42 * Math.min(1, W/500), Math.min(1, W/500));
-      ctx.globalAlpha = 1;
-    }
-
-    // Items on desk when open
-    if (angle > 80) {
-      const itemAlpha = Math.min(1, (angle - 80)/10);
-      ctx.globalAlpha = itemAlpha;
-      const deskSurfaceY = wallY + deskH - 2;
-      const deskRight = wallX + deskW * Math.sin(angle * Math.PI/180);
-
-      // Laptop
-      const lx = wallX + deskW*0.25;
-      ctx.fillStyle = '#C0C0C0';
-      ctx.beginPath();
-      ctx.roundRect(lx, deskSurfaceY - 22, deskW*0.35, 2, 1);
-      ctx.fill();
-      ctx.fillStyle = '#333';
-      ctx.beginPath();
-      ctx.roundRect(lx + 2, deskSurfaceY - 42, deskW*0.31, 20, 2);
-      ctx.fill();
-      ctx.fillStyle = '#555';
-      ctx.fillRect(lx + 5, deskSurfaceY - 39, deskW*0.25, 14);
-
-      // Coffee cup
-      ctx.fillStyle = '#F5F0E8';
-      ctx.beginPath();
-      ctx.arc(wallX + deskW*0.78, deskSurfaceY - 10, 8, 0, Math.PI*2);
-      ctx.fill();
-      ctx.strokeStyle = '#D5D0C8';
-      ctx.lineWidth = 1.5;
-      ctx.stroke();
-
-      ctx.globalAlpha = 1;
-    }
-
-    // Wall-mount bracket hint when closed
-    if (angle < 10) {
-      const bracketAlpha = 1 - angle/10;
-      ctx.globalAlpha = bracketAlpha * 0.15;
-      ctx.fillStyle = '#888';
-      ctx.fillRect(wallX + deskH*0.2, wallY - 3, deskH*0.15, 3);
-      ctx.fillRect(wallX + deskH*0.65, wallY - 3, deskH*0.15, 3);
-      ctx.globalAlpha = 1;
-    }
+    drawProduct(ctx, W, H, angle);
 
     // Caption
-    ctx.fillStyle = 'rgba(0,0,0,0.35)';
-    ctx.font = `500 ${Math.max(11, W*0.024)}px Inter, sans-serif`;
+    ctx.fillStyle = 'rgba(0,0,0,0.3)';
+    ctx.font = `500 ${Math.max(11, W*0.022)}px Inter, sans-serif`;
     ctx.textAlign = 'center';
-    const caption = angle > 45 ? 'Escritorio funcional' : 'Decoración de pared';
-    ctx.fillText(caption, W/2, H - 14);
+    ctx.textBaseline = 'bottom';
+    const caption = angle > 45 ? 'Escritorio funcional · 2 monitores + laptop' : 'Decoración de pared · 15 cm de profundidad';
+    ctx.fillText(caption, W/2, H - 8);
 
     requestAnimationFrame(draw);
   }
   requestAnimationFrame(draw);
 })();
 
-// ── SOLUTION CANVAS: Detailed open/close with measurements ──
+// ── SOLUTION CANVAS: Technical view with dimensions ──
 (function initSolutionCanvas() {
   const canvas = document.getElementById('solutionCanvas');
   if (!canvas) return;
@@ -1463,138 +1529,200 @@ function darken(hex, amt) {
   const CYCLE = 8000;
   let start = performance.now();
 
-  function drawDimLine(ctx, x1, y1, x2, y2, label, side) {
-    ctx.strokeStyle = 'rgba(0,0,0,0.25)';
+  const WOOD = '#6B5140';
+  const WOOD_LIGHT = '#8B7060';
+  const WOOD_DARK = '#4A3628';
+  const EDGE_WHITE = '#F0EDE8';
+
+  function drawDimLine(ctx, x1, y1, x2, y2, label, offset) {
+    ctx.strokeStyle = 'rgba(26,26,26,0.5)';
     ctx.lineWidth = 1;
-    ctx.setLineDash([4,3]);
-    ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
     ctx.setLineDash([]);
-    // End ticks
     const horiz = Math.abs(y1-y2) < 2;
+    // Line
+    ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+    // End ticks
     if (horiz) {
-      ctx.beginPath(); ctx.moveTo(x1,y1-4); ctx.lineTo(x1,y1+4); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(x2,y2-4); ctx.lineTo(x2,y2+4); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(x1,y1-5); ctx.lineTo(x1,y1+5); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(x2,y2-5); ctx.lineTo(x2,y2+5); ctx.stroke();
     } else {
-      ctx.beginPath(); ctx.moveTo(x1-4,y1); ctx.lineTo(x1+4,y1); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(x2-4,y2); ctx.lineTo(x2+4,y2); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(x1-5,y1); ctx.lineTo(x1+5,y1); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(x2-5,y2); ctx.lineTo(x2+5,y2); ctx.stroke();
     }
-    // Label
-    ctx.fillStyle = 'rgba(0,0,0,0.4)';
-    ctx.font = `600 ${Math.max(10,11)}px Inter, sans-serif`;
+    // Label badge
+    const mx = (x1+x2)/2, my = (y1+y2)/2;
+    ctx.font = `600 12px Inter, sans-serif`;
+    const tw = ctx.measureText(label).width;
+    const bx = horiz ? mx : mx + offset;
+    const by = horiz ? my + offset : my;
+    ctx.fillStyle = 'rgba(26,26,26,0.85)';
+    ctx.beginPath();
+    ctx.roundRect(bx - tw/2 - 8, by - 10, tw + 16, 20, 10);
+    ctx.fill();
+    ctx.fillStyle = '#fff';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    const mx = (x1+x2)/2, my = (y1+y2)/2;
-    if (horiz) ctx.fillText(label, mx, my + (side === 'top' ? -12 : 12));
-    else ctx.fillText(label, mx + (side === 'left' ? -22 : 22), my);
+    ctx.fillText(label, bx, by);
+  }
+
+  function drawSideView(ctx, W, H, angle) {
+    const cx = W * 0.45;
+    const baseY = H * 0.78;
+    const scale = Math.min(W / 550, H / 350);
+
+    ctx.save();
+    ctx.translate(cx, baseY);
+    ctx.scale(scale, scale);
+
+    const panelW = 240;
+    const panelH = 160;
+    const deskD = 150;
+    const rad = angle * Math.PI / 180;
+
+    // Back panel
+    ctx.fillStyle = WOOD;
+    ctx.beginPath();
+    ctx.roundRect(-panelW/2, -panelH, panelW, panelH, [3,3,0,0]);
+    ctx.fill();
+    ctx.fillStyle = WOOD_DARK;
+    ctx.fillRect(-panelW/2, -panelH, panelW, 4);
+    ctx.fillRect(-panelW/2, -panelH, 4, panelH);
+    ctx.fillRect(panelW/2-4, -panelH, 4, panelH);
+    // Grain
+    ctx.strokeStyle = 'rgba(0,0,0,0.05)';
+    ctx.lineWidth = 0.6;
+    for (let i = 0; i < 10; i++) {
+      const gy = -panelH + (panelH/11)*(i+1);
+      ctx.beginPath();
+      ctx.moveTo(-panelW/2+6, gy);
+      ctx.bezierCurveTo(-panelW/4, gy+Math.sin(i)*2, panelW/4, gy-Math.sin(i*1.3), panelW/2-6, gy);
+      ctx.stroke();
+    }
+
+    // Shelves (3)
+    const shelfTop = -panelH + 10;
+    const shelfH = panelH * 0.3;
+    const sp = 6;
+    const sw = (panelW - sp*4)/3;
+    for (let i = 0; i < 3; i++) {
+      const sx = -panelW/2 + sp + (sw+sp)*i;
+      ctx.fillStyle = '#5A4435';
+      ctx.beginPath(); ctx.roundRect(sx, shelfTop, sw, shelfH, 2); ctx.fill();
+    }
+
+    // Desk surface
+    if (angle > 0) {
+      const deskVisH = deskD * Math.sin(rad);
+      const topW = panelW;
+      const botW = panelW * (1 + angle/500);
+      // White edge
+      ctx.fillStyle = EDGE_WHITE;
+      ctx.beginPath();
+      ctx.moveTo(-topW/2, 0);
+      ctx.lineTo(topW/2, 0);
+      ctx.lineTo(botW/2, deskVisH);
+      ctx.lineTo(-botW/2, deskVisH);
+      ctx.closePath();
+      ctx.fill();
+      // Wood
+      ctx.fillStyle = WOOD_LIGHT;
+      const e = 3;
+      ctx.beginPath();
+      ctx.moveTo(-topW/2+e, e*0.3);
+      ctx.lineTo(topW/2-e, e*0.3);
+      ctx.lineTo(botW/2-e, deskVisH-e*0.5);
+      ctx.lineTo(-botW/2+e, deskVisH-e*0.5);
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    // Hinge
+    ctx.fillStyle = 'rgba(0,0,0,0.12)';
+    ctx.fillRect(-panelW/2+15, -1.5, panelW-30, 3);
+
+    ctx.restore();
+
+    // ── DIMENSION LINES ──
+    const px = cx, py = baseY;
+    const pW_s = panelW * scale;
+    const pH_s = panelH * scale;
+    const deskVis_s = deskD * Math.sin(rad) * scale;
+
+    if (angle > 85) {
+      const a = Math.min(1, (angle-85)/5);
+      ctx.globalAlpha = a;
+      // Width
+      drawDimLine(ctx, px - pW_s/2, py + deskVis_s + 24, px + pW_s/2, py + deskVis_s + 24, '120 cm', -14);
+      // Depth
+      drawDimLine(ctx, px + pW_s/2 + 24, py, px + pW_s/2 + 24, py + deskVis_s, '60 cm', 28);
+      ctx.globalAlpha = 1;
+    }
+    if (angle < 5) {
+      const a = Math.min(1, (5-angle)/5);
+      ctx.globalAlpha = a;
+      // Height
+      drawDimLine(ctx, px - pW_s/2 - 24, py - pH_s, px - pW_s/2 - 24, py, '75 cm', -28);
+      // Thickness
+      drawDimLine(ctx, px - pW_s/2, py + 20, px - pW_s/2 + 10*scale, py + 20, '15 cm', 14);
+      ctx.globalAlpha = 1;
+    }
   }
 
   function draw(now) {
     const W = canvas.width / dpr;
     const H = canvas.height / dpr;
-    const floorY = H * 0.75;
     ctx.clearRect(0, 0, W, H);
 
-    // Room
-    drawRoom(ctx, W, H, {
-      wallColor: '#F5F3EE', floorColor: '#E8E4DC', floorY, shadowAlpha: 0.05
-    });
+    ctx.fillStyle = '#F0EFEB';
+    ctx.fillRect(0, 0, W, H);
+    const floorY = H * 0.78;
+    ctx.fillStyle = '#E8E5DE';
+    ctx.fillRect(0, floorY, W, H-floorY);
 
     const elapsed = (now - start) % CYCLE;
     let angle, phase;
-    if (elapsed < 1800) {
-      angle = easeInOutCubic(elapsed / 1800) * 90;
-      phase = 'opening';
-    } else if (elapsed < 4200) {
-      angle = 90;
-      phase = 'open';
-    } else if (elapsed < 6000) {
-      angle = 90 - easeInOutCubic((elapsed - 4200) / 1800) * 90;
-      phase = 'closing';
-    } else {
-      angle = 0;
-      phase = 'closed';
-    }
+    if (elapsed < 1800) { angle = easeInOutCubic(elapsed/1800)*90; phase='opening'; }
+    else if (elapsed < 4200) { angle = 90; phase='open'; }
+    else if (elapsed < 6000) { angle = 90-easeInOutCubic((elapsed-4200)/1800)*90; phase='closing'; }
+    else { angle = 0; phase='closed'; }
 
-    const deskW = W * 0.32;
-    const deskH = H * 0.38;
-    const wallX = W * 0.34;
-    const wallY = floorY - deskH - H*0.04;
-    const legLen = floorY - (wallY + deskH) - 4;
+    drawSideView(ctx, W, H, angle);
 
-    // Wall mount plate
-    ctx.fillStyle = 'rgba(0,0,0,0.04)';
-    ctx.fillRect(wallX - 4, wallY - 2, deskH + 8, deskH + 6);
-
-    drawDesk(ctx, wallX, wallY, deskW, deskH, angle, '#1A1A1A', legLen);
-
-    // Dimension lines when open
-    if (angle > 85) {
-      const dimAlpha = Math.min(1, (angle - 85) / 5);
-      ctx.globalAlpha = dimAlpha;
-      const surfaceY = wallY + deskH;
-      const deskEndX = wallX + deskW;
-      // Width
-      drawDimLine(ctx, wallX, surfaceY + 20, deskEndX, surfaceY + 20, '120 cm', 'top');
-      // Depth
-      drawDimLine(ctx, deskEndX + 16, wallY, deskEndX + 16, surfaceY, '60 cm', 'right');
-      ctx.globalAlpha = 1;
-    }
-
-    // Dimension lines when closed
-    if (angle < 5) {
-      const dimAlpha = Math.min(1, (5 - angle) / 5);
-      ctx.globalAlpha = dimAlpha;
-      // Height
-      drawDimLine(ctx, wallX - 16, wallY, wallX - 16, wallY + deskH, '75 cm', 'left');
-      // Width (thickness)
-      drawDimLine(ctx, wallX, wallY + deskH + 16, wallX + 8, wallY + deskH + 16, '15 cm', 'top');
-      ctx.globalAlpha = 1;
-    }
-
-    // Phase labels
-    ctx.textAlign = 'center';
+    // Phase badge
     const labels = {
-      opening: { text: 'Se despliega en 5 segundos', icon: '↓' },
-      open: { text: '120 × 60 cm de superficie útil', icon: '✓' },
-      closing: { text: 'Se pliega con un solo movimiento', icon: '↑' },
-      closed: { text: 'Solo 15 cm de profundidad cerrado', icon: '—' },
+      opening:'Se despliega en 5 segundos',
+      open:'120 × 60 cm de superficie útil',
+      closing:'Se pliega con un solo movimiento',
+      closed:'Solo 15 cm de profundidad cerrado',
     };
-    const lb = labels[phase];
-
-    // Badge
-    const badgeW = Math.min(320, W * 0.55);
+    const badgeW = Math.min(320, W*0.55);
     const badgeH = 34;
-    const badgeX = W/2 - badgeW/2;
-    const badgeY = H * 0.06;
-    ctx.fillStyle = 'rgba(26,26,26,0.85)';
-    ctx.beginPath();
-    ctx.roundRect(badgeX, badgeY, badgeW, badgeH, 17);
-    ctx.fill();
+    const badgeX = W/2-badgeW/2;
+    const badgeY = H*0.05;
+    ctx.fillStyle = 'rgba(26,26,26,0.88)';
+    ctx.beginPath(); ctx.roundRect(badgeX, badgeY, badgeW, badgeH, 17); ctx.fill();
     ctx.fillStyle = '#fff';
-    ctx.font = `600 ${Math.max(12, W*0.022)}px Inter, sans-serif`;
-    ctx.textBaseline = 'middle';
-    ctx.fillText(lb.text, W/2, badgeY + badgeH/2);
+    ctx.font = `600 ${Math.max(12,W*0.022)}px Inter, sans-serif`;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(labels[phase], W/2, badgeY+badgeH/2);
 
-    // Timer ring bottom right
-    const ringX = W - 36;
-    const ringY = H - 30;
-    const ringR = 14;
-    const progress = elapsed / CYCLE;
-    ctx.strokeStyle = 'rgba(0,0,0,0.08)';
-    ctx.lineWidth = 2.5;
-    ctx.beginPath(); ctx.arc(ringX, ringY, ringR, 0, Math.PI*2); ctx.stroke();
+    // Timer ring
+    const ringX = W-36, ringY = H-26, ringR = 14;
+    const progress = elapsed/CYCLE;
+    ctx.strokeStyle = 'rgba(0,0,0,0.08)'; ctx.lineWidth = 2.5;
+    ctx.beginPath(); ctx.arc(ringX,ringY,ringR,0,Math.PI*2); ctx.stroke();
     ctx.strokeStyle = 'rgba(0,0,0,0.3)';
-    ctx.beginPath(); ctx.arc(ringX, ringY, ringR, -Math.PI/2, -Math.PI/2 + progress*Math.PI*2); ctx.stroke();
+    ctx.beginPath(); ctx.arc(ringX,ringY,ringR,-Math.PI/2,-Math.PI/2+progress*Math.PI*2); ctx.stroke();
     ctx.fillStyle = 'rgba(0,0,0,0.3)';
-    ctx.font = `600 9px Inter, sans-serif`;
+    ctx.font = '600 9px Inter, sans-serif';
     ctx.textBaseline = 'middle';
-    ctx.fillText(`${Math.ceil((CYCLE - elapsed)/1000)}s`, ringX, ringY);
+    ctx.fillText(`${Math.ceil((CYCLE-elapsed)/1000)}s`, ringX, ringY);
 
-    // 5s badge
-    ctx.fillStyle = 'rgba(0,0,0,0.15)';
-    ctx.font = `500 ${Math.max(10, W*0.02)}px Inter, sans-serif`;
+    // Branding
+    ctx.fillStyle = 'rgba(0,0,0,0.12)';
+    ctx.font = `500 ${Math.max(10,W*0.018)}px Inter, sans-serif`;
     ctx.textBaseline = 'bottom';
-    ctx.fillText('ALITOSHI', W/2, H - 10);
+    ctx.fillText('ALITOSHI', W/2, H-8);
 
     requestAnimationFrame(draw);
   }

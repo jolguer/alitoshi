@@ -112,3 +112,17 @@ Todas las versiones notables de este proyecto están documentadas aquí.
 ### Cambiado
 - Title mejorado: "ALITOSHI — Escritorios Plegables de Pared | Hecho en Ecuador"
 - Responsive: la barra promo reduce tipografía en móvil
+
+---
+
+## [v5.0.0] — 2026-09-18
+
+### Cambiado
+- **Rediseño completo de animaciones Canvas** basadas en el producto real:
+  - Hero: escritorio en acabado nogal con panel trasero, 3 compartimentos de repisas, 2 monitores con pantallas de arte abstracto, laptop con cables, borde blanco en la superficie, vetas de madera realistas
+  - Solución: vista técnica con el mismo diseño de producto, líneas de dimensión con badges oscuros, timer de progreso
+- Paleta de colores del producto actualizada: nogal (#6B5140), madera clara (#8B7060), madera oscura (#4A3628), borde blanco (#F0EDE8)
+- Perspectiva pseudo-3D con trapezoide para simular profundidad de la superficie desplegada
+- Los monitores muestran gradientes abstractos que coinciden con los wallpapers del producto real
+- Logo "ALITOSHI" aparece en la pantalla del monitor izquierdo
+- Cable visible conectando laptop a monitores
