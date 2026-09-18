@@ -126,3 +126,20 @@ Todas las versiones notables de este proyecto están documentadas aquí.
 - Los monitores muestran gradientes abstractos que coinciden con los wallpapers del producto real
 - Logo "ALITOSHI" aparece en la pantalla del monitor izquierdo
 - Cable visible conectando laptop a monitores
+
+---
+
+## [v6.0.0] — 2026-09-18
+
+### Cambiado
+- **Animación estilo YouTube Short cinematográfico** — Rediseño completo del timing y la narrativa visual:
+  - Ciclo hero de 9 segundos con storytelling: cerrado → pulso de "tap" en el latch → apertura suave con easeOutExpo → monitores encienden progresivamente → glow de pantallas → pausa abierto → cierre elegante → pausa cerrado
+  - Cables de soporte laterales visibles en ambos lados (izquierdo y derecho) con bisagras metálicas
+  - Mecanismo de latch/cerradura visible en la parte superior cuando está cerrado
+  - Monitores con efecto glow radial que simula la luz de las pantallas encendiéndose
+  - Soportes y pedestales de monitores visibles
+  - Puntos de bisagra en la línea de plegado
+  - Captions dinámicos que narran cada fase: "Un cuadro en tu pared" → "Se despliega en segundos" → "2 monitores + laptop · listo para trabajar" → "Se pliega con un movimiento"
+  - Función `renderALITOSHI()` compartida entre ambos canvas con parámetros configurables
+  - Nuevas funciones de easing: `easeOutExpo` para apertura más realista (rápido al inicio, frena al final)
+  - Efecto de "tap pulse" (anillo expandiéndose) cuando el escritorio está cerrado, como si alguien tocara el mecanismo

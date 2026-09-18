@@ -1150,584 +1150,349 @@ function formatDate(d) {
   return parseInt(p[2])+' '+m[parseInt(p[1])-1]+' '+p[0];
 }
 
+
 // ═══════════════════════════════════════
 // ── ANIMATED PRODUCT "VIDEOS" (Canvas) ──
+// ── Cinematic style inspired by product Short videos ──
 // ═══════════════════════════════════════
 
-function easeInOutCubic(t) { return t < .5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2; }
+function easeInOutCubic(t){return t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;}
+function easeOutExpo(t){return t===1?1:1-Math.pow(2,-10*t);}
+function lerp(a,b,t){return a+(b-a)*t;}
 
-// ── Wood texture fill ──
-function fillWood(ctx, x, y, w, h, baseColor, grainColor, grainCount) {
-  ctx.fillStyle = baseColor;
-  ctx.fillRect(x, y, w, h);
-  ctx.strokeStyle = grainColor;
-  ctx.lineWidth = 0.6;
-  for (let i = 0; i < grainCount; i++) {
-    const gy = y + (h / (grainCount+1)) * (i+1) + (Math.sin(i*3.7)*2);
+// ── Shared Product Renderer ──
+function renderALITOSHI(ctx, W, H, config) {
+  const {
+    angle, showMonitors, showLaptop, showGlow,
+    scale: userScale, centerX: cx, centerY: baseY,
+  } = config;
+
+  const scale = userScale || Math.min(W/580, H/370);
+  const rad = angle * Math.PI / 180;
+
+  const WOOD='#6B5140',WOOD_L='#8B7060',WOOD_D='#4A3628',EDGE='#F0EDE8',FRAME='#1A1A1A',SHELF='#3D2E22';
+
+  ctx.save();
+  ctx.translate(cx || W*0.5, baseY || H*0.85);
+  ctx.scale(scale, scale);
+
+  const pW=280,pH=190,deskD=165;
+
+  // ═══ SHADOW ═══
+  if(angle>5){
+    const sy=deskD*Math.sin(rad)+10;
+    ctx.fillStyle=`rgba(0,0,0,${0.07*(angle/90)})`;
+    ctx.beginPath();ctx.ellipse(0,sy,(pW*0.6+angle*0.8)/2,10,0,0,Math.PI*2);ctx.fill();
+  }
+
+  // ═══ SUPPORT CABLES (left + right) ═══
+  if(angle>3){
+    const armA=Math.min(1,angle/20);
+    ctx.globalAlpha=armA;
+    const dFY=deskD*Math.sin(rad);
+    const apY=-pH*0.35;
+    const adX=pW*0.42,adY=dFY*0.75;
+    ctx.strokeStyle='#777';ctx.lineWidth=2.5;ctx.lineCap='round';
+    ctx.beginPath();ctx.moveTo(-pW/2-3,apY);ctx.lineTo(-adX,adY);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(pW/2+3,apY);ctx.lineTo(adX,adY);ctx.stroke();
+    ctx.fillStyle='#888';
+    [[-pW/2-3,apY],[-adX,adY],[pW/2+3,apY],[adX,adY]].forEach(([x,y])=>{
+      ctx.beginPath();ctx.arc(x,y,3,0,Math.PI*2);ctx.fill();
+    });
+    ctx.globalAlpha=1;
+  }
+
+  // ═══ BACK PANEL ═══
+  ctx.fillStyle=WOOD;
+  ctx.beginPath();ctx.roundRect(-pW/2,-pH,pW,pH,[5,5,0,0]);ctx.fill();
+  ctx.strokeStyle='rgba(0,0,0,0.05)';ctx.lineWidth=0.6;
+  for(let i=0;i<14;i++){
+    const gy=-pH+(pH/15)*(i+1);
     ctx.beginPath();
-    ctx.moveTo(x, gy);
-    const cp1x = x + w*0.3, cp1y = gy + Math.sin(i*1.3)*3;
-    const cp2x = x + w*0.7, cp2y = gy - Math.sin(i*2.1)*2;
-    ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x+w, gy + Math.sin(i*0.7)*2);
+    ctx.moveTo(-pW/2+6,gy+Math.sin(i*2.3)*1.5);
+    ctx.bezierCurveTo(-pW/4,gy+Math.sin(i)*2.5,pW/4,gy-Math.sin(i*1.5)*2,pW/2-6,gy+Math.sin(i*0.8));
     ctx.stroke();
   }
+  ctx.fillStyle=WOOD_D;
+  ctx.fillRect(-pW/2,-pH,pW,5);
+  ctx.fillRect(-pW/2,-pH,5,pH);
+  ctx.fillRect(pW/2-5,-pH,5,pH);
+
+  // ═══ SHELVES ═══
+  const shR=Math.min(1,angle/25);
+  if(shR>0){
+    ctx.globalAlpha=shR;
+    const sT=-pH+12,sH=pH*0.28,sp=7,sW=(pW-sp*4)/3;
+    for(let i=0;i<3;i++){
+      const sx=-pW/2+sp+(sW+sp)*i;
+      ctx.fillStyle=SHELF;
+      ctx.beginPath();ctx.roundRect(sx,sT,sW,sH,3);ctx.fill();
+      const grd=ctx.createLinearGradient(sx,sT,sx,sT+12);
+      grd.addColorStop(0,'rgba(0,0,0,0.2)');grd.addColorStop(1,'rgba(0,0,0,0)');
+      ctx.fillStyle=grd;ctx.fillRect(sx,sT,sW,12);
+    }
+    ctx.globalAlpha=1;
+  }
+
+  // ═══ MONITORS ═══
+  const mA=showMonitors!=null?showMonitors:(angle>30?Math.min(1,(angle-30)/30):0);
+  if(mA>0){
+    ctx.globalAlpha=mA;
+    const mW=pW*0.42,mH=pH*0.34,mY=-pH+12+pH*0.28+10,gap=6;
+
+    // Glow
+    const gA=showGlow!=null?showGlow:mA;
+    if(gA>0.3){
+      ctx.globalAlpha=(gA-0.3)*0.4;
+      const g1=ctx.createRadialGradient(-gap/2-mW/2,mY+mH/2,mH*0.2,-gap/2-mW/2,mY+mH/2,mH);
+      g1.addColorStop(0,'rgba(140,170,200,0.3)');g1.addColorStop(1,'rgba(140,170,200,0)');
+      ctx.fillStyle=g1;ctx.fillRect(-pW/2,mY-20,pW/2,mH+40);
+      const g2=ctx.createRadialGradient(gap/2+mW/2,mY+mH/2,mH*0.2,gap/2+mW/2,mY+mH/2,mH);
+      g2.addColorStop(0,'rgba(200,150,130,0.3)');g2.addColorStop(1,'rgba(200,150,130,0)');
+      ctx.fillStyle=g2;ctx.fillRect(0,mY-20,pW/2,mH+40);
+      ctx.globalAlpha=mA;
+    }
+
+    // Left monitor
+    const lx=-gap/2-mW,sp=3;
+    ctx.fillStyle=FRAME;ctx.beginPath();ctx.roundRect(lx,mY,mW,mH,3);ctx.fill();
+    const lg1=ctx.createLinearGradient(lx,mY,lx+mW,mY+mH);
+    lg1.addColorStop(0,'#6B8299');lg1.addColorStop(0.35,'#8EA8BC');
+    lg1.addColorStop(0.6,'#C8907A');lg1.addColorStop(1,'#B85A3A');
+    ctx.fillStyle=lg1;ctx.fillRect(lx+sp,mY+sp,mW-sp*2,mH-sp*2);
+    ctx.fillStyle='rgba(180,80,50,0.35)';
+    ctx.beginPath();ctx.moveTo(lx+sp,mY+mH*0.55);
+    ctx.bezierCurveTo(lx+mW*0.3,mY+mH*0.25,lx+mW*0.6,mY+mH*0.8,lx+mW-sp,mY+mH*0.45);
+    ctx.lineTo(lx+mW-sp,mY+mH-sp);ctx.lineTo(lx+sp,mY+mH-sp);ctx.fill();
+    ctx.fillStyle='rgba(255,255,255,0.85)';
+    ctx.font=`bold ${Math.max(7,mW*0.08)}px Inter,sans-serif`;
+    ctx.textAlign='left';ctx.textBaseline='top';
+    ctx.fillText('ALITOSHI',lx+sp+6,mY+sp+5);
+
+    // Right monitor
+    const rx=gap/2;
+    ctx.fillStyle=FRAME;ctx.beginPath();ctx.roundRect(rx,mY,mW,mH,3);ctx.fill();
+    const lg2=ctx.createLinearGradient(rx,mY,rx+mW,mY+mH);
+    lg2.addColorStop(0,'#A0B4C4');lg2.addColorStop(0.3,'#D4A494');
+    lg2.addColorStop(0.7,'#C49080');lg2.addColorStop(1,'#90AABC');
+    ctx.fillStyle=lg2;ctx.fillRect(rx+sp,mY+sp,mW-sp*2,mH-sp*2);
+    ctx.fillStyle='rgba(90,120,150,0.3)';
+    ctx.beginPath();ctx.moveTo(rx+sp,mY+mH*0.35);
+    ctx.bezierCurveTo(rx+mW*0.35,mY+mH*0.65,rx+mW*0.65,mY+sp,rx+mW-sp,mY+mH*0.5);
+    ctx.lineTo(rx+mW-sp,mY+sp);ctx.lineTo(rx+sp,mY+sp);ctx.fill();
+
+    // Stands
+    ctx.fillStyle='#222';
+    ctx.fillRect(lx+mW*0.35,mY+mH,mW*0.3,4);
+    ctx.fillRect(rx+mW*0.35,mY+mH,mW*0.3,4);
+    ctx.fillRect(lx+mW*0.45,mY+mH+4,mW*0.1,6);
+    ctx.fillRect(rx+mW*0.45,mY+mH+4,mW*0.1,6);
+
+    // Cable
+    ctx.strokeStyle='rgba(0,0,0,0.18)';ctx.lineWidth=1.5;
+    ctx.beginPath();ctx.moveTo(-2,mY+mH+10);ctx.quadraticCurveTo(4,mY+mH+30,0,mY+mH+35);ctx.stroke();
+    ctx.globalAlpha=1;
+  }
+
+  // ═══ DESK SURFACE ═══
+  if(angle>0){
+    const dVH=deskD*Math.sin(rad);
+    const tW=pW,bW=pW*(1+angle/350);
+    const tH=tW/2,bH=bW/2,e=4;
+
+    ctx.fillStyle=EDGE;
+    ctx.beginPath();ctx.moveTo(-tH,0);ctx.lineTo(tH,0);ctx.lineTo(bH,dVH);ctx.lineTo(-bH,dVH);ctx.closePath();ctx.fill();
+
+    ctx.fillStyle=WOOD_L;
+    ctx.beginPath();ctx.moveTo(-tH+e,e*0.3);ctx.lineTo(tH-e,e*0.3);ctx.lineTo(bH-e,dVH-e*0.6);ctx.lineTo(-bH+e,dVH-e*0.6);ctx.closePath();ctx.fill();
+
+    ctx.strokeStyle='rgba(0,0,0,0.035)';ctx.lineWidth=0.5;
+    for(let i=0;i<10;i++){
+      const t2=(i+1)/11,ly=t2*dVH,lw=lerp(tH,bH,t2);
+      ctx.beginPath();ctx.moveTo(-lw+e+5,ly+Math.sin(i*1.7));
+      ctx.bezierCurveTo(-lw*0.3,ly+Math.sin(i)*1.5,lw*0.3,ly-Math.sin(i*1.2),lw-e-5,ly+Math.sin(i*0.6));ctx.stroke();
+    }
+
+    if(angle>50){const es=ctx.createLinearGradient(0,dVH-8,0,dVH);
+      es.addColorStop(0,'rgba(0,0,0,0)');es.addColorStop(1,'rgba(0,0,0,0.04)');
+      ctx.fillStyle=es;ctx.fillRect(-bH,dVH-8,bW,8);}
+
+    // Laptop
+    const lA=showLaptop!=null?showLaptop:(angle>70?Math.min(1,(angle-70)/18):0);
+    if(lA>0){
+      ctx.globalAlpha=lA;
+      const lW=pW*0.25,lBH=dVH*0.06,lX=-lW/2+15,lBY=dVH*0.45;
+      ctx.fillStyle='#A8A8A8';ctx.beginPath();ctx.roundRect(lX,lBY,lW,lBH+4,2);ctx.fill();
+      ctx.fillStyle='#999';ctx.fillRect(lX+lW*0.35,lBY+lBH-2,lW*0.3,4);
+      const sH2=lBH*9;
+      ctx.fillStyle='#333';ctx.beginPath();ctx.roundRect(lX-1,lBY-sH2,lW+2,sH2,[4,4,0,0]);ctx.fill();
+      const lgr=ctx.createLinearGradient(lX,lBY-sH2,lX+lW,lBY);
+      lgr.addColorStop(0,'#D08060');lgr.addColorStop(0.5,'#7C8FA0');lgr.addColorStop(1,'#B06040');
+      ctx.fillStyle=lgr;ctx.fillRect(lX+4,lBY-sH2+4,lW-6,sH2-8);
+      ctx.fillStyle='rgba(255,255,255,0.06)';ctx.fillRect(lX+4,lBY-sH2+4,(lW-6)*0.5,sH2-8);
+      ctx.strokeStyle='rgba(0,0,0,0.15)';ctx.lineWidth=1.5;
+      ctx.beginPath();ctx.moveTo(lX+lW+2,lBY);
+      ctx.bezierCurveTo(lX+lW+25,lBY+5,lX+lW+20,lBY-30,lX+lW+10,lBY-sH2+10);ctx.stroke();
+      ctx.globalAlpha=1;
+    }
+  }
+
+  // ═══ HINGE ═══
+  ctx.fillStyle='rgba(0,0,0,0.12)';
+  ctx.beginPath();ctx.roundRect(-pW/2+12,-2,pW-24,3,1.5);ctx.fill();
+  ctx.fillStyle='rgba(0,0,0,0.1)';
+  [-pW/4,0,pW/4].forEach(x=>{ctx.beginPath();ctx.arc(x,0,2.5,0,Math.PI*2);ctx.fill();});
+
+  // ═══ LATCH ═══
+  if(angle<40){
+    ctx.globalAlpha=Math.min(1,(40-angle)/30);
+    ctx.fillStyle='#888';ctx.beginPath();ctx.roundRect(-8,-pH-2,16,8,[3,3,0,0]);ctx.fill();
+    ctx.fillStyle='#666';ctx.beginPath();ctx.arc(0,-pH+2,2,0,Math.PI*2);ctx.fill();
+    ctx.globalAlpha=1;
+  }
+
+  ctx.restore();
 }
 
-// ── HERO CANVAS: 3D isometric product ──
-(function initHeroCanvas() {
-  const canvas = document.getElementById('heroCanvas');
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  const dpr = window.devicePixelRatio || 1;
 
-  function resize() {
-    const rect = canvas.parentElement.getBoundingClientRect();
-    canvas.width = rect.width * dpr;
-    canvas.height = rect.height * dpr;
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  }
-  resize();
-  window.addEventListener('resize', resize);
+// ═════════════════════════════════════════
+// ── HERO CANVAS: Cinematic Short-style ──
+// ═════════════════════════════════════════
+(function initHeroCanvas(){
+  const canvas=document.getElementById('heroCanvas');
+  if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  const dpr=window.devicePixelRatio||1;
+  function resize(){const r=canvas.parentElement.getBoundingClientRect();canvas.width=r.width*dpr;canvas.height=r.height*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);}
+  resize();window.addEventListener('resize',resize);
+  const CYCLE=9000;let start=performance.now();
 
-  const CYCLE = 7000;
-  let start = performance.now();
+  function draw(now){
+    const W=canvas.width/dpr,H=canvas.height/dpr;
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle='#F0EFEB';ctx.fillRect(0,0,W,H);
+    const flY=H*0.87;
+    ctx.fillStyle='#E6E3DC';ctx.fillRect(0,flY,W,H-flY);
+    ctx.strokeStyle='rgba(0,0,0,0.04)';ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(0,flY);ctx.lineTo(W,flY);ctx.stroke();
 
-  // Colors
-  const WOOD = '#6B5140';
-  const WOOD_LIGHT = '#8B7060';
-  const WOOD_DARK = '#4A3628';
-  const WOOD_GRAIN = 'rgba(0,0,0,0.06)';
-  const EDGE_WHITE = '#F0EDE8';
-  const SHELF_BG = '#5A4435';
-  const MONITOR_FRAME = '#1A1A1A';
-  const MONITOR_SCREEN_L = '#7C8FA0';
-  const MONITOR_SCREEN_R = '#C49585';
-  const LAPTOP_BODY = '#888';
+    const elapsed=(now-start)%CYCLE;
+    let angle=0,monVis=0,lapVis=0,glowVis=0,tapPulse=0;
 
-  function drawProduct(ctx, W, H, angle) {
-    // angle: 0=closed, 90=open
-    const cx = W * 0.5;
-    const baseY = H * 0.88;
-    const scale = Math.min(W / 600, H / 380);
-
-    ctx.save();
-    ctx.translate(cx, baseY);
-    ctx.scale(scale, scale);
-
-    const panelW = 280;
-    const panelH = 180;
-    const deskD = 170; // desk depth when open
-    const deskThick = 6;
-    const hingeY = 0; // bottom of back panel = hinge point
-    const rad = angle * Math.PI / 180;
-
-    // ── Shadow on "wall" ──
-    if (angle < 80) {
-      ctx.fillStyle = `rgba(0,0,0,${0.04 * (1 - angle/90)})`;
-      ctx.fillRect(-panelW/2 - 8, -panelH - 8, panelW + 16, panelH + 16);
+    if(elapsed<400){
+      tapPulse=Math.sin((elapsed/400)*Math.PI);
+    }else if(elapsed<2200){
+      const t=(elapsed-400)/1800;
+      angle=easeOutExpo(t)*90;
+      monVis=t>0.4?Math.min(1,(t-0.4)/0.4):0;
+      lapVis=t>0.7?Math.min(1,(t-0.7)/0.3):0;
+    }else if(elapsed<2800){
+      angle=90;monVis=1;lapVis=1;
+      glowVis=easeInOutCubic((elapsed-2200)/600);
+    }else if(elapsed<5500){
+      angle=90;monVis=1;lapVis=1;glowVis=1;
+    }else if(elapsed<7300){
+      const t=(elapsed-5500)/1800;
+      angle=90-easeInOutCubic(t)*90;
+      monVis=1-t;lapVis=Math.max(0,1-t*1.5);glowVis=Math.max(0,1-t*2);
     }
 
-    // ── BACK PANEL (always visible, on "wall") ──
-    // Main panel
-    ctx.fillStyle = WOOD;
-    ctx.beginPath();
-    ctx.roundRect(-panelW/2, -panelH, panelW, panelH, [4,4,0,0]);
-    ctx.fill();
-    // Wood grain on panel
-    ctx.strokeStyle = WOOD_GRAIN;
-    ctx.lineWidth = 0.7;
-    for (let i = 0; i < 12; i++) {
-      const gy = -panelH + (panelH/13)*(i+1);
-      ctx.beginPath();
-      ctx.moveTo(-panelW/2 + 4, gy + Math.sin(i*2.3)*2);
-      ctx.bezierCurveTo(-panelW/4, gy+Math.sin(i)*3, panelW/4, gy-Math.sin(i*1.5)*2, panelW/2-4, gy+Math.sin(i*0.8));
-      ctx.stroke();
-    }
-    // Top edge (darker)
-    ctx.fillStyle = WOOD_DARK;
-    ctx.fillRect(-panelW/2, -panelH, panelW, 6);
-    // Side edges
-    ctx.fillStyle = WOOD_DARK;
-    ctx.fillRect(-panelW/2, -panelH, 5, panelH);
-    ctx.fillRect(panelW/2 - 5, -panelH, 5, panelH);
-
-    // ── SHELF COMPARTMENTS (3 slots) ──
-    const shelfY = -panelH + 14;
-    const shelfH = panelH * 0.35;
-    const shelfPad = 8;
-    const slotW = (panelW - shelfPad*4) / 3;
-
-    // Only visible when desk is partially/fully open
-    const shelfAlpha = Math.min(1, angle / 30);
-    if (shelfAlpha > 0) {
-      ctx.globalAlpha = shelfAlpha;
-      for (let i = 0; i < 3; i++) {
-        const sx = -panelW/2 + shelfPad + (slotW + shelfPad) * i;
-        ctx.fillStyle = SHELF_BG;
-        ctx.beginPath();
-        ctx.roundRect(sx, shelfY, slotW, shelfH, 3);
-        ctx.fill();
-        // Inner shadow
-        ctx.fillStyle = 'rgba(0,0,0,0.15)';
-        ctx.fillRect(sx, shelfY, slotW, 3);
-      }
-
-      // ── MONITORS on back panel ──
-      if (angle > 20) {
-        const monAlpha = Math.min(1, (angle - 20) / 30);
-        ctx.globalAlpha = monAlpha;
-        const monW = panelW * 0.4;
-        const monH = panelH * 0.36;
-        const monY = shelfY + shelfH + 8;
-        const gap = 8;
-
-        // Left monitor
-        const lmx = -gap/2 - monW;
-        ctx.fillStyle = MONITOR_FRAME;
-        ctx.beginPath(); ctx.roundRect(lmx, monY, monW, monH, 3); ctx.fill();
-        // Screen with abstract art (matching product image)
-        const screenPad = 3;
-        const gradient1 = ctx.createLinearGradient(lmx, monY, lmx+monW, monY+monH);
-        gradient1.addColorStop(0, '#7C8FA0');
-        gradient1.addColorStop(0.4, '#A0B0BC');
-        gradient1.addColorStop(0.7, '#D4836B');
-        gradient1.addColorStop(1, '#C06040');
-        ctx.fillStyle = gradient1;
-        ctx.fillRect(lmx+screenPad, monY+screenPad, monW-screenPad*2, monH-screenPad*2);
-        // Wave shapes on screen
-        ctx.fillStyle = 'rgba(180,90,60,0.4)';
-        ctx.beginPath();
-        ctx.moveTo(lmx+screenPad, monY+monH*0.6);
-        ctx.quadraticCurveTo(lmx+monW*0.4, monY+monH*0.3, lmx+monW*0.6, monY+monH*0.7);
-        ctx.quadraticCurveTo(lmx+monW*0.8, monY+monH, lmx+monW-screenPad, monY+monH*0.5);
-        ctx.lineTo(lmx+monW-screenPad, monY+monH-screenPad);
-        ctx.lineTo(lmx+screenPad, monY+monH-screenPad);
-        ctx.fill();
-        // "ALITOSHI" logo on left screen
-        ctx.fillStyle = 'rgba(255,255,255,0.9)';
-        ctx.font = `bold ${Math.max(8, monW*0.09)}px Inter, sans-serif`;
-        ctx.textAlign = 'left';
-        ctx.textBaseline = 'middle';
-        ctx.fillText('ALITOSHI', lmx+screenPad+8, monY+monH*0.35);
-
-        // Right monitor
-        const rmx = gap/2;
-        ctx.fillStyle = MONITOR_FRAME;
-        ctx.beginPath(); ctx.roundRect(rmx, monY, monW, monH, 3); ctx.fill();
-        const gradient2 = ctx.createLinearGradient(rmx, monY, rmx+monW, monY+monH);
-        gradient2.addColorStop(0, '#A0B0BC');
-        gradient2.addColorStop(0.3, '#D4A090');
-        gradient2.addColorStop(0.6, '#C09080');
-        gradient2.addColorStop(1, '#B0C0CC');
-        ctx.fillStyle = gradient2;
-        ctx.fillRect(rmx+screenPad, monY+screenPad, monW-screenPad*2, monH-screenPad*2);
-        ctx.fillStyle = 'rgba(100,130,160,0.35)';
-        ctx.beginPath();
-        ctx.moveTo(rmx+screenPad, monY+monH*0.4);
-        ctx.quadraticCurveTo(rmx+monW*0.3, monY+monH*0.7, rmx+monW*0.5, monY+monH*0.3);
-        ctx.quadraticCurveTo(rmx+monW*0.7, monY, rmx+monW-screenPad, monY+monH*0.5);
-        ctx.lineTo(rmx+monW-screenPad, monY+screenPad);
-        ctx.lineTo(rmx+screenPad, monY+screenPad);
-        ctx.fill();
-
-        // Cable hint between monitors
-        ctx.strokeStyle = 'rgba(0,0,0,0.2)';
-        ctx.lineWidth = 1.5;
-        ctx.beginPath();
-        ctx.moveTo(0, monY+monH);
-        ctx.quadraticCurveTo(5, monY+monH+15, 0, monY+monH+20);
-        ctx.stroke();
-      }
-      ctx.globalAlpha = 1;
-    }
-    ctx.globalAlpha = 1;
-
-    // ── DESK SURFACE (folds from hinge) ──
-    ctx.save();
-    // Hinge is at bottom of back panel (y=0)
-    // When closed: desk is vertical (against panel)
-    // When open: desk is horizontal (flat)
-    const deskRotation = (90 - angle) * Math.PI / 180;
-
-    // 3D perspective simulation for the desk
-    const deskVisibleH = deskD * Math.sin(rad); // how far desk extends
-    const deskVisibleCompression = Math.cos(rad) * 0.6 + 0.4; // foreshortening
-
-    if (angle > 2) {
-      // Shadow under desk
-      const shadowAlpha = 0.08 * (angle/90);
-      ctx.fillStyle = `rgba(0,0,0,${shadowAlpha})`;
-      ctx.beginPath();
-      ctx.ellipse(0, deskVisibleH + 8, panelW/2 + 10, 8, 0, 0, Math.PI*2);
-      ctx.fill();
-
-      // Desk surface (trapezoid for perspective)
-      const topW = panelW; // width at hinge
-      const botW = panelW * (1 + angle/400); // slightly wider at front
-      const botHalf = botW / 2;
-      const topHalf = topW / 2;
-
-      // White edge (bottom/front of desk)
-      ctx.fillStyle = EDGE_WHITE;
-      ctx.beginPath();
-      ctx.moveTo(-topHalf, 0);
-      ctx.lineTo(topHalf, 0);
-      ctx.lineTo(botHalf, deskVisibleH);
-      ctx.lineTo(-botHalf, deskVisibleH);
-      ctx.closePath();
-      ctx.fill();
-
-      // Wood surface (inset from edge)
-      const edgeW = 4;
-      ctx.fillStyle = WOOD_LIGHT;
-      ctx.beginPath();
-      ctx.moveTo(-topHalf+edgeW, edgeW*0.3);
-      ctx.lineTo(topHalf-edgeW, edgeW*0.3);
-      ctx.lineTo(botHalf-edgeW, deskVisibleH-edgeW*0.5);
-      ctx.lineTo(-botHalf+edgeW, deskVisibleH-edgeW*0.5);
-      ctx.closePath();
-      ctx.fill();
-
-      // Wood grain on desk
-      ctx.strokeStyle = 'rgba(0,0,0,0.04)';
-      ctx.lineWidth = 0.5;
-      for (let i = 0; i < 8; i++) {
-        const t = (i+1) / 9;
-        const ly = t * deskVisibleH;
-        const lw = topHalf + (botHalf - topHalf) * t;
-        ctx.beginPath();
-        ctx.moveTo(-lw+edgeW+5, ly + Math.sin(i*1.7)*1.5);
-        ctx.bezierCurveTo(-lw*0.3, ly+Math.sin(i)*2, lw*0.3, ly-Math.sin(i*1.2), lw-edgeW-5, ly+Math.sin(i*0.6));
-        ctx.stroke();
-      }
-
-      // ── LAPTOP on desk ──
-      if (angle > 60) {
-        const lapAlpha = Math.min(1, (angle-60)/25);
-        ctx.globalAlpha = lapAlpha;
-        const lapW = panelW * 0.28;
-        const lapH = deskVisibleH * 0.2;
-        const lapX = -lapW/2 + 10;
-        const lapY = deskVisibleH * 0.35;
-
-        // Laptop base
-        ctx.fillStyle = '#B0B0B0';
-        ctx.beginPath();
-        ctx.roundRect(lapX, lapY, lapW, lapH, 2);
-        ctx.fill();
-        // Laptop screen (tilted back)
-        const screenH = lapH * 2.5;
-        ctx.fillStyle = '#333';
-        ctx.beginPath();
-        ctx.roundRect(lapX + 2, lapY - screenH + 2, lapW - 4, screenH, [3,3,0,0]);
-        ctx.fill();
-        // Screen content
-        const lgr = ctx.createLinearGradient(lapX, lapY-screenH, lapX+lapW, lapY);
-        lgr.addColorStop(0, '#D4836B');
-        lgr.addColorStop(0.5, '#7C8FA0');
-        lgr.addColorStop(1, '#C06040');
-        ctx.fillStyle = lgr;
-        ctx.fillRect(lapX+5, lapY-screenH+5, lapW-14, screenH-8);
-
-        // Cable from laptop
-        ctx.strokeStyle = 'rgba(0,0,0,0.15)';
-        ctx.lineWidth = 1.5;
-        ctx.beginPath();
-        ctx.moveTo(lapX + lapW, lapY + lapH/2);
-        ctx.quadraticCurveTo(lapX+lapW+20, lapY+lapH, lapX+lapW+15, lapY-10);
-        ctx.stroke();
-
-        ctx.globalAlpha = 1;
-      }
-    }
-    ctx.restore();
-
-    // ── Hinge detail ──
-    ctx.fillStyle = 'rgba(0,0,0,0.15)';
-    ctx.fillRect(-panelW/2 + 20, -2, panelW - 40, 3);
-
-    // ── Side bracket (left) ──
-    if (angle > 10) {
-      const brackAlpha = Math.min(1, (angle-10)/20);
-      ctx.globalAlpha = brackAlpha;
-      ctx.strokeStyle = WOOD_DARK;
-      ctx.lineWidth = 3;
-      const bx = -panelW/2 - 2;
-      const by = -panelH * 0.3;
-      const bEndY = deskD * Math.sin(rad) * 0.7;
-      ctx.beginPath();
-      ctx.moveTo(bx, by);
-      ctx.lineTo(bx - 3, bEndY);
-      ctx.stroke();
-      ctx.globalAlpha = 1;
+    if(tapPulse>0){
+      const sc=Math.min(W/580,H/370);
+      ctx.globalAlpha=tapPulse*0.3;ctx.strokeStyle='#1A1A1A';ctx.lineWidth=2;
+      ctx.beginPath();ctx.arc(W*0.5,H*0.85-190*sc-2*sc,(20+tapPulse*15)*sc,0,Math.PI*2);ctx.stroke();
+      ctx.globalAlpha=1;
     }
 
-    ctx.restore();
-  }
+    renderALITOSHI(ctx,W,H,{angle,showMonitors:monVis,showLaptop:lapVis,showGlow:glowVis,centerX:W*0.5,centerY:H*0.85});
 
-  function draw(now) {
-    const W = canvas.width / dpr;
-    const H = canvas.height / dpr;
-    ctx.clearRect(0, 0, W, H);
-
-    // Soft background
-    ctx.fillStyle = '#F0EFEB';
-    ctx.fillRect(0, 0, W, H);
-
-    // Subtle wall/floor division
-    const floorY = H * 0.88;
-    ctx.fillStyle = '#E8E5DE';
-    ctx.fillRect(0, floorY, W, H - floorY);
-    ctx.strokeStyle = 'rgba(0,0,0,0.04)';
-    ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.moveTo(0, floorY); ctx.lineTo(W, floorY); ctx.stroke();
-
-    // Animation cycle
-    const elapsed = (now - start) % CYCLE;
-    let angle;
-    if (elapsed < 1500) {
-      angle = easeInOutCubic(elapsed / 1500) * 90;
-    } else if (elapsed < 3800) {
-      angle = 90;
-    } else if (elapsed < 5300) {
-      angle = 90 - easeInOutCubic((elapsed - 3800) / 1500) * 90;
-    } else {
-      angle = 0;
-    }
-
-    drawProduct(ctx, W, H, angle);
-
-    // Caption
-    ctx.fillStyle = 'rgba(0,0,0,0.3)';
-    ctx.font = `500 ${Math.max(11, W*0.022)}px Inter, sans-serif`;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'bottom';
-    const caption = angle > 45 ? 'Escritorio funcional · 2 monitores + laptop' : 'Decoración de pared · 15 cm de profundidad';
-    ctx.fillText(caption, W/2, H - 8);
-
+    ctx.fillStyle='rgba(0,0,0,0.3)';
+    ctx.font=`500 ${Math.max(11,W*0.022)}px Inter,sans-serif`;
+    ctx.textAlign='center';ctx.textBaseline='bottom';
+    let cap;
+    if(angle<5)cap='Un cuadro en tu pared · 15 cm';
+    else if(angle<45)cap='Se despliega en segundos...';
+    else if(angle>=89&&glowVis>0.5)cap='2 monitores + laptop · listo para trabajar';
+    else if(angle>=85)cap='Superficie completa · 120 × 60 cm';
+    else cap='Se pliega con un movimiento';
+    ctx.fillText(cap,W/2,H-8);
     requestAnimationFrame(draw);
   }
   requestAnimationFrame(draw);
 })();
 
-// ── SOLUTION CANVAS: Technical view with dimensions ──
-(function initSolutionCanvas() {
-  const canvas = document.getElementById('solutionCanvas');
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  const dpr = window.devicePixelRatio || 1;
 
-  function resize() {
-    const rect = canvas.parentElement.getBoundingClientRect();
-    canvas.width = rect.width * dpr;
-    canvas.height = rect.height * dpr;
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  }
-  resize();
-  window.addEventListener('resize', resize);
+// ═══════════════════════════════════════════
+// ── SOLUTION CANVAS: Technical dimensions ──
+// ═══════════════════════════════════════════
+(function initSolutionCanvas(){
+  const canvas=document.getElementById('solutionCanvas');
+  if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  const dpr=window.devicePixelRatio||1;
+  function resize(){const r=canvas.parentElement.getBoundingClientRect();canvas.width=r.width*dpr;canvas.height=r.height*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);}
+  resize();window.addEventListener('resize',resize);
+  const CYCLE=8000;let start=performance.now();
 
-  const CYCLE = 8000;
-  let start = performance.now();
-
-  const WOOD = '#6B5140';
-  const WOOD_LIGHT = '#8B7060';
-  const WOOD_DARK = '#4A3628';
-  const EDGE_WHITE = '#F0EDE8';
-
-  function drawDimLine(ctx, x1, y1, x2, y2, label, offset) {
-    ctx.strokeStyle = 'rgba(26,26,26,0.5)';
-    ctx.lineWidth = 1;
-    ctx.setLineDash([]);
-    const horiz = Math.abs(y1-y2) < 2;
-    // Line
-    ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
-    // End ticks
-    if (horiz) {
-      ctx.beginPath(); ctx.moveTo(x1,y1-5); ctx.lineTo(x1,y1+5); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(x2,y2-5); ctx.lineTo(x2,y2+5); ctx.stroke();
-    } else {
-      ctx.beginPath(); ctx.moveTo(x1-5,y1); ctx.lineTo(x1+5,y1); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(x2-5,y2); ctx.lineTo(x2+5,y2); ctx.stroke();
-    }
-    // Label badge
-    const mx = (x1+x2)/2, my = (y1+y2)/2;
-    ctx.font = `600 12px Inter, sans-serif`;
-    const tw = ctx.measureText(label).width;
-    const bx = horiz ? mx : mx + offset;
-    const by = horiz ? my + offset : my;
-    ctx.fillStyle = 'rgba(26,26,26,0.85)';
-    ctx.beginPath();
-    ctx.roundRect(bx - tw/2 - 8, by - 10, tw + 16, 20, 10);
-    ctx.fill();
-    ctx.fillStyle = '#fff';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(label, bx, by);
+  function drawDimBadge(ctx,x1,y1,x2,y2,label,offset){
+    ctx.strokeStyle='rgba(26,26,26,0.45)';ctx.lineWidth=1;ctx.setLineDash([]);
+    const horiz=Math.abs(y1-y2)<2;
+    ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();
+    if(horiz){ctx.beginPath();ctx.moveTo(x1,y1-5);ctx.lineTo(x1,y1+5);ctx.stroke();ctx.beginPath();ctx.moveTo(x2,y2-5);ctx.lineTo(x2,y2+5);ctx.stroke();}
+    else{ctx.beginPath();ctx.moveTo(x1-5,y1);ctx.lineTo(x1+5,y1);ctx.stroke();ctx.beginPath();ctx.moveTo(x2-5,y2);ctx.lineTo(x2+5,y2);ctx.stroke();}
+    const mx=(x1+x2)/2,my=(y1+y2)/2;
+    ctx.font='600 11px Inter,sans-serif';const tw=ctx.measureText(label).width;
+    const bx=horiz?mx:mx+offset,by=horiz?my+offset:my;
+    ctx.fillStyle='rgba(26,26,26,0.88)';ctx.beginPath();ctx.roundRect(bx-tw/2-8,by-10,tw+16,20,10);ctx.fill();
+    ctx.fillStyle='#fff';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(label,bx,by);
   }
 
-  function drawSideView(ctx, W, H, angle) {
-    const cx = W * 0.45;
-    const baseY = H * 0.78;
-    const scale = Math.min(W / 550, H / 350);
+  function draw(now){
+    const W=canvas.width/dpr,H=canvas.height/dpr;
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle='#F0EFEB';ctx.fillRect(0,0,W,H);
+    const flY=H*0.82;ctx.fillStyle='#E6E3DC';ctx.fillRect(0,flY,W,H-flY);
 
-    ctx.save();
-    ctx.translate(cx, baseY);
-    ctx.scale(scale, scale);
+    const elapsed=(now-start)%CYCLE;
+    let angle,phase;
+    if(elapsed<1800){angle=easeOutExpo(elapsed/1800)*90;phase='opening';}
+    else if(elapsed<4200){angle=90;phase='open';}
+    else if(elapsed<6000){angle=90-easeInOutCubic((elapsed-4200)/1800)*90;phase='closing';}
+    else{angle=0;phase='closed';}
 
-    const panelW = 240;
-    const panelH = 160;
-    const deskD = 150;
-    const rad = angle * Math.PI / 180;
+    const sc=Math.min(W/560,H/340),cx=W*0.46,cy=H*0.80;
+    renderALITOSHI(ctx,W,H,{angle,
+      showMonitors:angle>25?Math.min(1,(angle-25)/30):0,
+      showLaptop:angle>65?Math.min(1,(angle-65)/20):0,
+      showGlow:angle>80?Math.min(1,(angle-80)/10):0,
+      scale:sc,centerX:cx,centerY:cy});
 
-    // Back panel
-    ctx.fillStyle = WOOD;
-    ctx.beginPath();
-    ctx.roundRect(-panelW/2, -panelH, panelW, panelH, [3,3,0,0]);
-    ctx.fill();
-    ctx.fillStyle = WOOD_DARK;
-    ctx.fillRect(-panelW/2, -panelH, panelW, 4);
-    ctx.fillRect(-panelW/2, -panelH, 4, panelH);
-    ctx.fillRect(panelW/2-4, -panelH, 4, panelH);
-    // Grain
-    ctx.strokeStyle = 'rgba(0,0,0,0.05)';
-    ctx.lineWidth = 0.6;
-    for (let i = 0; i < 10; i++) {
-      const gy = -panelH + (panelH/11)*(i+1);
-      ctx.beginPath();
-      ctx.moveTo(-panelW/2+6, gy);
-      ctx.bezierCurveTo(-panelW/4, gy+Math.sin(i)*2, panelW/4, gy-Math.sin(i*1.3), panelW/2-6, gy);
-      ctx.stroke();
-    }
+    const pWs=280*sc,pHs=190*sc,dVs=165*Math.sin(angle*Math.PI/180)*sc;
+    if(angle>87){const a=Math.min(1,(angle-87)/3);ctx.globalAlpha=a;
+      drawDimBadge(ctx,cx-pWs/2,cy+dVs+22,cx+pWs/2,cy+dVs+22,'120 cm',-14);
+      drawDimBadge(ctx,cx+pWs/2+22,cy,cx+pWs/2+22,cy+dVs,'60 cm',26);ctx.globalAlpha=1;}
+    if(angle<4){const a=Math.min(1,(4-angle)/4);ctx.globalAlpha=a;
+      drawDimBadge(ctx,cx-pWs/2-22,cy-pHs,cx-pWs/2-22,cy,'75 cm',-26);
+      drawDimBadge(ctx,cx-pWs/4,cy+18,cx-pWs/4+12*sc,cy+18,'15 cm',14);ctx.globalAlpha=1;}
 
-    // Shelves (3)
-    const shelfTop = -panelH + 10;
-    const shelfH = panelH * 0.3;
-    const sp = 6;
-    const sw = (panelW - sp*4)/3;
-    for (let i = 0; i < 3; i++) {
-      const sx = -panelW/2 + sp + (sw+sp)*i;
-      ctx.fillStyle = '#5A4435';
-      ctx.beginPath(); ctx.roundRect(sx, shelfTop, sw, shelfH, 2); ctx.fill();
-    }
+    const labels={opening:'Se despliega en 5 segundos',open:'120 × 60 cm · superficie completa',closing:'Se pliega con un solo movimiento',closed:'Solo 15 cm cerrado · como un cuadro'};
+    const bW2=Math.min(320,W*0.55),bH2=34,bX2=W/2-bW2/2,bY2=H*0.04;
+    ctx.fillStyle='rgba(26,26,26,0.88)';ctx.beginPath();ctx.roundRect(bX2,bY2,bW2,bH2,17);ctx.fill();
+    ctx.fillStyle='#fff';ctx.font=`600 ${Math.max(12,W*0.022)}px Inter,sans-serif`;
+    ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(labels[phase],W/2,bY2+bH2/2);
 
-    // Desk surface
-    if (angle > 0) {
-      const deskVisH = deskD * Math.sin(rad);
-      const topW = panelW;
-      const botW = panelW * (1 + angle/500);
-      // White edge
-      ctx.fillStyle = EDGE_WHITE;
-      ctx.beginPath();
-      ctx.moveTo(-topW/2, 0);
-      ctx.lineTo(topW/2, 0);
-      ctx.lineTo(botW/2, deskVisH);
-      ctx.lineTo(-botW/2, deskVisH);
-      ctx.closePath();
-      ctx.fill();
-      // Wood
-      ctx.fillStyle = WOOD_LIGHT;
-      const e = 3;
-      ctx.beginPath();
-      ctx.moveTo(-topW/2+e, e*0.3);
-      ctx.lineTo(topW/2-e, e*0.3);
-      ctx.lineTo(botW/2-e, deskVisH-e*0.5);
-      ctx.lineTo(-botW/2+e, deskVisH-e*0.5);
-      ctx.closePath();
-      ctx.fill();
-    }
-
-    // Hinge
-    ctx.fillStyle = 'rgba(0,0,0,0.12)';
-    ctx.fillRect(-panelW/2+15, -1.5, panelW-30, 3);
-
-    ctx.restore();
-
-    // ── DIMENSION LINES ──
-    const px = cx, py = baseY;
-    const pW_s = panelW * scale;
-    const pH_s = panelH * scale;
-    const deskVis_s = deskD * Math.sin(rad) * scale;
-
-    if (angle > 85) {
-      const a = Math.min(1, (angle-85)/5);
-      ctx.globalAlpha = a;
-      // Width
-      drawDimLine(ctx, px - pW_s/2, py + deskVis_s + 24, px + pW_s/2, py + deskVis_s + 24, '120 cm', -14);
-      // Depth
-      drawDimLine(ctx, px + pW_s/2 + 24, py, px + pW_s/2 + 24, py + deskVis_s, '60 cm', 28);
-      ctx.globalAlpha = 1;
-    }
-    if (angle < 5) {
-      const a = Math.min(1, (5-angle)/5);
-      ctx.globalAlpha = a;
-      // Height
-      drawDimLine(ctx, px - pW_s/2 - 24, py - pH_s, px - pW_s/2 - 24, py, '75 cm', -28);
-      // Thickness
-      drawDimLine(ctx, px - pW_s/2, py + 20, px - pW_s/2 + 10*scale, py + 20, '15 cm', 14);
-      ctx.globalAlpha = 1;
-    }
-  }
-
-  function draw(now) {
-    const W = canvas.width / dpr;
-    const H = canvas.height / dpr;
-    ctx.clearRect(0, 0, W, H);
-
-    ctx.fillStyle = '#F0EFEB';
-    ctx.fillRect(0, 0, W, H);
-    const floorY = H * 0.78;
-    ctx.fillStyle = '#E8E5DE';
-    ctx.fillRect(0, floorY, W, H-floorY);
-
-    const elapsed = (now - start) % CYCLE;
-    let angle, phase;
-    if (elapsed < 1800) { angle = easeInOutCubic(elapsed/1800)*90; phase='opening'; }
-    else if (elapsed < 4200) { angle = 90; phase='open'; }
-    else if (elapsed < 6000) { angle = 90-easeInOutCubic((elapsed-4200)/1800)*90; phase='closing'; }
-    else { angle = 0; phase='closed'; }
-
-    drawSideView(ctx, W, H, angle);
-
-    // Phase badge
-    const labels = {
-      opening:'Se despliega en 5 segundos',
-      open:'120 × 60 cm de superficie útil',
-      closing:'Se pliega con un solo movimiento',
-      closed:'Solo 15 cm de profundidad cerrado',
-    };
-    const badgeW = Math.min(320, W*0.55);
-    const badgeH = 34;
-    const badgeX = W/2-badgeW/2;
-    const badgeY = H*0.05;
-    ctx.fillStyle = 'rgba(26,26,26,0.88)';
-    ctx.beginPath(); ctx.roundRect(badgeX, badgeY, badgeW, badgeH, 17); ctx.fill();
-    ctx.fillStyle = '#fff';
-    ctx.font = `600 ${Math.max(12,W*0.022)}px Inter, sans-serif`;
-    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    ctx.fillText(labels[phase], W/2, badgeY+badgeH/2);
-
-    // Timer ring
-    const ringX = W-36, ringY = H-26, ringR = 14;
-    const progress = elapsed/CYCLE;
-    ctx.strokeStyle = 'rgba(0,0,0,0.08)'; ctx.lineWidth = 2.5;
-    ctx.beginPath(); ctx.arc(ringX,ringY,ringR,0,Math.PI*2); ctx.stroke();
-    ctx.strokeStyle = 'rgba(0,0,0,0.3)';
-    ctx.beginPath(); ctx.arc(ringX,ringY,ringR,-Math.PI/2,-Math.PI/2+progress*Math.PI*2); ctx.stroke();
-    ctx.fillStyle = 'rgba(0,0,0,0.3)';
-    ctx.font = '600 9px Inter, sans-serif';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(`${Math.ceil((CYCLE-elapsed)/1000)}s`, ringX, ringY);
-
-    // Branding
-    ctx.fillStyle = 'rgba(0,0,0,0.12)';
-    ctx.font = `500 ${Math.max(10,W*0.018)}px Inter, sans-serif`;
-    ctx.textBaseline = 'bottom';
-    ctx.fillText('ALITOSHI', W/2, H-8);
-
+    const rX=W-34,rY=H-24,rR=13,prog=elapsed/CYCLE;
+    ctx.strokeStyle='rgba(0,0,0,0.07)';ctx.lineWidth=2.5;ctx.beginPath();ctx.arc(rX,rY,rR,0,Math.PI*2);ctx.stroke();
+    ctx.strokeStyle='rgba(0,0,0,0.25)';ctx.beginPath();ctx.arc(rX,rY,rR,-Math.PI/2,-Math.PI/2+prog*Math.PI*2);ctx.stroke();
+    ctx.fillStyle='rgba(0,0,0,0.25)';ctx.font='600 9px Inter,sans-serif';ctx.textBaseline='middle';
+    ctx.fillText(`${Math.ceil((CYCLE-elapsed)/1000)}s`,rX,rY);
+    ctx.fillStyle='rgba(0,0,0,0.1)';ctx.font=`500 ${Math.max(10,W*0.017)}px Inter,sans-serif`;
+    ctx.textBaseline='bottom';ctx.fillText('ALITOSHI',W/2,H-7);
     requestAnimationFrame(draw);
   }
   requestAnimationFrame(draw);
 })();
+
 
 // ══════════════════════════════════════
 // ── LOADING SCREEN ──
