@@ -93,3 +93,22 @@ Todas las versiones notables de este proyecto están documentadas aquí.
 - **Cambiado** para cambios en funcionalidades existentes
 - **Eliminado** para funcionalidades removidas
 - **Corregido** para corrección de errores
+
+---
+
+## [v4.0.0] — 2026-09-18
+
+### Agregado
+- **Pantalla de carga** con logo ALITOSHI y barra de progreso animada
+- **Barra de countdown promocional** fija arriba del navbar con timer regresivo de 7 días ("Precio de lanzamiento termina en...")
+- **Botón scroll-to-top** (flecha arriba) aparece al bajar 600px, con animación suave
+- **Contador de viewers en vivo** (simulado) debajo del CTA del hero con indicador verde pulsante
+- **SEO completo**: meta description, keywords, canonical, Open Graph, Twitter Card
+- **Favicon SVG inline** (icono de escritorio en negro)
+- **Meta theme-color** para barras de navegador móvil
+- Navbar se ajusta dinámicamente al alto de la barra promocional
+- Menú móvil y hero padding adaptados al promo bar
+
+### Cambiado
+- Title mejorado: "ALITOSHI — Escritorios Plegables de Pared | Hecho en Ecuador"
+- Responsive: la barra promo reduce tipografía en móvil

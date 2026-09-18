@@ -3,7 +3,31 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ALITOSHI — Muebles plegables de pared</title>
+<title>ALITOSHI — Escritorios Plegables de Pared | Hecho en Ecuador</title>
+<meta name="description" content="Escritorios plegables de pared que se transforman en decoración. Diseñados para espacios pequeños. Desde $199. Envío gratis a todo Ecuador.">
+<meta name="keywords" content="escritorio plegable, mueble de pared, escritorio abatible, muebles Ecuador, home office, ahorro espacio">
+<meta name="author" content="ALITOSHI">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://alitoshi.com">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://alitoshi.com">
+<meta property="og:title" content="ALITOSHI — Tu espacio. Transformado.">
+<meta property="og:description" content="Escritorios plegables de pared. De decoración a escritorio funcional en 5 segundos. Desde $199.">
+<meta property="og:site_name" content="ALITOSHI">
+<meta property="og:locale" content="es_EC">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="ALITOSHI — Escritorios Plegables de Pared">
+<meta name="twitter:description" content="De decoración a escritorio funcional en 5 segundos. Hecho en Ecuador. Desde $199.">
+
+<!-- Favicon (inline SVG data URI) -->
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='10' y='20' width='80' height='60' rx='6' fill='%231A1A1A'/><rect x='18' y='28' width='64' height='44' rx='2' fill='%23FAFAF7'/></svg>">
+
+<!-- Theme color -->
+<meta name="theme-color" content="#FAFAF7">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -285,13 +309,82 @@ footer a { color:var(--whatsapp);text-decoration:none; }
   .color-grid{grid-template-columns:repeat(3,1fr)}
   .monitor-pair{grid-template-columns:1fr}
   .config-preview{flex-wrap:wrap}
+  .promo-bar{font-size:12px}
+  .promo-bar .promo-timer{gap:4px}
 }
 @media(max-width:400px){
   .color-grid{grid-template-columns:repeat(2,1fr)}
 }
+
+/* ── Promo countdown bar ── */
+.promo-bar {
+  background:var(--accent);color:var(--white);
+  text-align:center;padding:10px 24px;
+  font-size:13px;font-weight:600;letter-spacing:.02em;
+  display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;
+}
+.promo-timer { display:flex;align-items:center;gap:6px; }
+.promo-timer .time-block {
+  background:rgba(255,255,255,.15);padding:2px 8px;
+  border-radius:4px;font-variant-numeric:tabular-nums;
+  min-width:32px;text-align:center;
+}
+
+/* ── Loading screen ── */
+.loading-screen {
+  position:fixed;inset:0;z-index:9999;
+  background:var(--bg);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  transition:opacity .5s ease,visibility .5s ease;
+}
+.loading-screen.hidden { opacity:0;visibility:hidden;pointer-events:none; }
+.loading-logo { font-weight:800;font-size:28px;letter-spacing:.2em;color:var(--text); }
+.loading-bar { width:120px;height:3px;background:var(--border);border-radius:2px;margin-top:20px;overflow:hidden; }
+.loading-bar-fill { width:0;height:100%;background:var(--accent);border-radius:2px;transition:width .4s ease; }
+
+/* ── Scroll to top ── */
+.scroll-top {
+  position:fixed;bottom:90px;right:24px;z-index:89;
+  width:44px;height:44px;border-radius:50%;
+  background:var(--white);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;opacity:0;pointer-events:none;
+  transition:opacity .3s,transform .3s;
+  box-shadow:0 2px 12px rgba(0,0,0,.08);
+}
+.scroll-top.visible { opacity:1;pointer-events:auto; }
+.scroll-top:hover { transform:scale(1.08); }
+.scroll-top svg { width:20px;height:20px;stroke:var(--text); }
+
+/* ── Live counter ── */
+.live-counter {
+  display:flex;align-items:center;gap:6px;justify-content:center;
+  margin-top:12px;font-size:13px;color:var(--text-secondary);
+}
+.live-dot { width:8px;height:8px;border-radius:50%;background:var(--green);
+  animation:livePulse 2s ease infinite; }
+@keyframes livePulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.8)} }
 </style>
 </head>
 <body>
+
+<!-- ════════ LOADING SCREEN ════════ -->
+<div class="loading-screen" id="loadingScreen">
+  <p class="loading-logo">ALITOSHI</p>
+  <div class="loading-bar"><div class="loading-bar-fill" id="loadingFill"></div></div>
+</div>
+
+<!-- ════════ PROMO COUNTDOWN BAR ════════ -->
+<div class="promo-bar" id="promoBar">
+  <span>Precio de lanzamiento termina en</span>
+  <div class="promo-timer">
+    <span class="time-block" id="promoDays">00</span>d
+    <span class="time-block" id="promoHours">00</span>h
+    <span class="time-block" id="promoMins">00</span>m
+    <span class="time-block" id="promoSecs">00</span>s
+  </div>
+  <span>— Ahorra $50+</span>
+</div>
 
 <!-- ════════ NAVBAR ════════ -->
 <nav class="navbar" id="navbar">
@@ -328,6 +421,10 @@ footer a { color:var(--whatsapp);text-decoration:none; }
         <span>Envío a todo Ecuador</span><span>·</span>
         <span>Garantía de 1 año</span><span>·</span>
         <span>Pago seguro</span>
+      </div>
+      <div class="live-counter animate-fade-up delay-4">
+        <span class="live-dot"></span>
+        <span id="liveCount">14 personas viendo esto ahora</span>
       </div>
     </div>
     <div class="video-placeholder animate-fade-up delay-3" style="background:#F0EFEB;">
@@ -631,6 +728,11 @@ footer a { color:var(--whatsapp);text-decoration:none; }
   <p style="margin-top:8px;">¿Preguntas? <a href="https://wa.me/593999999999" target="_blank">Escríbenos por WhatsApp</a></p>
   <p style="margin-top:16px;">© 2026 ALITOSHI. Todos los derechos reservados.</p>
 </footer>
+
+<!-- Scroll to Top -->
+<button class="scroll-top" id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
 
 <!-- WhatsApp FAB -->
 <a href="https://wa.me/593999999999" target="_blank" class="whatsapp-fab" aria-label="WhatsApp">
@@ -1497,6 +1599,93 @@ function darken(hex, amt) {
     requestAnimationFrame(draw);
   }
   requestAnimationFrame(draw);
+})();
+
+// ══════════════════════════════════════
+// ── LOADING SCREEN ──
+// ══════════════════════════════════════
+(function() {
+  const fill = document.getElementById('loadingFill');
+  const screen = document.getElementById('loadingScreen');
+  let pct = 0;
+  const interval = setInterval(() => {
+    pct += Math.random() * 30 + 10;
+    if (pct > 100) pct = 100;
+    fill.style.width = pct + '%';
+    if (pct >= 100) {
+      clearInterval(interval);
+      setTimeout(() => screen.classList.add('hidden'), 300);
+    }
+  }, 200);
+  // Fallback: hide after 2s no matter what
+  setTimeout(() => screen.classList.add('hidden'), 2000);
+})();
+
+// ══════════════════════════════════════
+// ── PROMO COUNTDOWN (7 days from now) ──
+// ══════════════════════════════════════
+(function() {
+  const end = new Date();
+  end.setDate(end.getDate() + 7);
+  end.setHours(23,59,59,0);
+
+  function tick() {
+    const now = new Date();
+    let diff = Math.max(0, Math.floor((end - now) / 1000));
+    const d = Math.floor(diff / 86400); diff %= 86400;
+    const h = Math.floor(diff / 3600); diff %= 3600;
+    const m = Math.floor(diff / 60);
+    const s = diff % 60;
+    document.getElementById('promoDays').textContent = String(d).padStart(2,'0');
+    document.getElementById('promoHours').textContent = String(h).padStart(2,'0');
+    document.getElementById('promoMins').textContent = String(m).padStart(2,'0');
+    document.getElementById('promoSecs').textContent = String(s).padStart(2,'0');
+  }
+  tick();
+  setInterval(tick, 1000);
+})();
+
+// ══════════════════════════════════════
+// ── NAVBAR OFFSET FOR PROMO BAR ──
+// ══════════════════════════════════════
+(function() {
+  const navbar = document.getElementById('navbar');
+  const promo = document.getElementById('promoBar');
+  function updateOffset() {
+    const h = promo.offsetHeight;
+    navbar.style.top = h + 'px';
+  }
+  updateOffset();
+  window.addEventListener('resize', updateOffset);
+  // Adjust hero padding too
+  document.querySelector('.hero').style.paddingTop = (120 + promo.offsetHeight) + 'px';
+  // Mobile menu offset
+  const mm = document.getElementById('mobileMenu');
+  mm.style.top = (60 + promo.offsetHeight) + 'px';
+})();
+
+// ══════════════════════════════════════
+// ── SCROLL TO TOP BUTTON ──
+// ══════════════════════════════════════
+(function() {
+  const btn = document.getElementById('scrollTopBtn');
+  window.addEventListener('scroll', () => {
+    btn.classList.toggle('visible', window.scrollY > 600);
+  });
+})();
+
+// ══════════════════════════════════════
+// ── LIVE VIEWER COUNTER (simulated) ──
+// ══════════════════════════════════════
+(function() {
+  const el = document.getElementById('liveCount');
+  let count = Math.floor(Math.random() * 8) + 12; // 12-19
+  function update() {
+    const delta = Math.random() > 0.5 ? 1 : -1;
+    count = Math.max(8, Math.min(28, count + delta));
+    el.textContent = count + ' personas viendo esto ahora';
+  }
+  setInterval(update, 4000 + Math.random() * 3000);
 })();
 </script>
 </body>
