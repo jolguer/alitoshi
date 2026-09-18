@@ -143,3 +143,49 @@ Todas las versiones notables de este proyecto están documentadas aquí.
   - Función `renderALITOSHI()` compartida entre ambos canvas con parámetros configurables
   - Nuevas funciones de easing: `easeOutExpo` para apertura más realista (rápido al inicio, frena al final)
   - Efecto de "tap pulse" (anillo expandiéndose) cuando el escritorio está cerrado, como si alguien tocara el mecanismo
+
+---
+
+## [v7.0.0] — 2026-09-18
+
+### Cambiado
+- **Motor de animación cinematográfico completamente nuevo:**
+  - Timeline extendido a 10s (hero) y 9s (solución) con storytelling narrativo
+  - Fase 1: Cerrado con double-ripple tap pulse (efecto de "alguien toca el mecanismo")
+  - Fase 2: Apertura con easeOutExpo (aceleración realista — rápido al soltar, frena suave)
+  - Fase 3: Boot de monitores — pantallas pasan de negro → glow tenue → encendido completo con contenido
+  - Fase 4: Glow radial de monitores ilumina el panel trasero (azul izquierda, cálido derecha)
+  - Fase 5: Ambient light shift — toda la escena se tiñe con la luz de las pantallas
+  - Fase 6: Cierre con easeInOutQuint (movimiento ultra-suave tipo premium)
+  
+- **Brazos de soporte metálicos rediseñados:**
+  - Barras gruesas con sombra proyectada
+  - Highlight central simulando reflejo metálico
+  - Pernos/bolts con detalle 3D (círculo exterior, reflejo, anillo)
+  
+- **Mecanismo de bisagra detallado:**
+  - Barra de hinge con acabado metálico y highlight superior
+  - 4 knuckles (nudillos) con reflejo individual
+  - Latch/cerradura en la parte superior con placa metálica, keyhole y biseladoo
+
+- **Monitores con secuencia de boot:**
+  - Fase negra con glow tenue azul/cálido
+  - Transición progresiva a pantalla completa
+  - Doble capa de ondas abstractas por monitor
+  - Reflejo de luz en esquina superior (efecto cristal)
+  - Stands y pedestales con cuello y base
+
+- **Laptop mejorada:**
+  - Sombra bajo la base
+  - Gradiente en teclado
+  - Trackpad detallado
+  - Pantalla con reflejo diagonal
+  - Cable curvo hacia los monitores
+
+- **Efectos de iluminación ambiental:**
+  - Glow radial detrás de cada monitor
+  - Ambient shift que tiñe toda la zona del producto
+  - Sombras dinámicas que crecen con la apertura
+  - Shadow del panel en la pared
+
+- **Captions mejorados:** nuevo caption "Los monitores se encienden..." durante fase de boot
