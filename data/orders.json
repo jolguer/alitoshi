@@ -1,0 +1,23 @@
+{
+  "ALI-2026-00123": {
+    "nombre": "María Fernández",
+    "fecha": "2026-09-10",
+    "estado": "enviado",
+    "fechaEstimada": "2026-09-20",
+    "ciudad": "Quito"
+  },
+  "ALI-2026-00124": {
+    "nombre": "Carlos Mendoza",
+    "fecha": "2026-09-12",
+    "estado": "produccion",
+    "fechaEstimada": "2026-09-25",
+    "ciudad": "Guayaquil"
+  },
+  "ALI-2026-00125": {
+    "nombre": "Ana Paredes",
+    "fecha": "2026-09-15",
+    "estado": "confirmado",
+    "fechaEstimada": "2026-09-30",
+    "ciudad": "Cuenca"
+  }
+}

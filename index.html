@@ -1,0 +1,1503 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ALITOSHI — Muebles plegables de pared</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --bg: #FAFAF7;
+  --text: #0A0A0A;
+  --text-secondary: #6B6B6B;
+  --accent: #1A1A1A;
+  --border: #E5E5E0;
+  --whatsapp: #25D366;
+  --surface: #F5F5F0;
+  --white: #FFFFFF;
+  --amber: #D97706;
+  --blue: #2563EB;
+  --green: #16A34A;
+  --green-dark: #15803D;
+  --red: #DC2626;
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg); color: var(--text);
+  line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden;
+}
+
+/* ── Animations ── */
+@keyframes fadeUp { from{opacity:0;transform:translateY(32px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+@keyframes pricePulse { 0%{transform:scale(1)} 50%{transform:scale(1.06)} 100%{transform:scale(1)} }
+.animate-fade-up { opacity:0; animation:fadeUp .8s cubic-bezier(.16,1,.3,1) forwards; }
+.delay-1{animation-delay:.1s} .delay-2{animation-delay:.2s} .delay-3{animation-delay:.35s} .delay-4{animation-delay:.5s}
+.reveal { opacity:0; transform:translateY(24px); transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1); }
+.reveal.visible { opacity:1; transform:translateY(0); }
+.price-pulse { animation: pricePulse .35s ease; }
+
+/* ── Navbar ── */
+.navbar { position:fixed;top:0;left:0;right:0;z-index:100; background:rgba(250,250,247,.8); backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px); border-bottom:1px solid transparent; transition:border-color .3s; }
+.navbar.scrolled { border-bottom-color:var(--border); }
+.navbar-inner { max-width:1200px;margin:0 auto; display:flex;align-items:center;justify-content:space-between; padding:16px 24px; }
+.logo { font-weight:800;font-size:18px;letter-spacing:.18em; color:var(--text);text-decoration:none; }
+.nav-links { display:flex;gap:32px;align-items:center; }
+.nav-links a { font-size:14px;color:var(--text-secondary);text-decoration:none;transition:color .2s; }
+.nav-links a:hover { color:var(--text); }
+.btn-primary { display:inline-flex;align-items:center;gap:8px; background:var(--accent);color:var(--white); font-size:14px;font-weight:600; padding:10px 24px;border-radius:9999px;border:none; cursor:pointer;text-decoration:none;transition:opacity .2s; white-space:nowrap; }
+.btn-primary:hover { opacity:.85; }
+.hamburger { display:none;background:none;border:none;cursor:pointer; width:24px;height:24px;position:relative; }
+.hamburger span { display:block;width:20px;height:2px;background:var(--text); position:absolute;left:2px;transition:all .3s; }
+.hamburger span:nth-child(1){top:6px} .hamburger span:nth-child(2){top:11px} .hamburger span:nth-child(3){top:16px}
+.hamburger.active span:nth-child(1){top:11px;transform:rotate(45deg)} .hamburger.active span:nth-child(2){opacity:0} .hamburger.active span:nth-child(3){top:11px;transform:rotate(-45deg)}
+.mobile-menu { display:none;position:fixed;top:60px;left:0;right:0;bottom:0; background:var(--bg);z-index:99;padding:32px 24px; flex-direction:column;gap:24px; }
+.mobile-menu.open { display:flex; }
+.mobile-menu a { font-size:20px;color:var(--text);text-decoration:none; padding:8px 0;border-bottom:1px solid var(--border); }
+
+/* ── Hero ── */
+.hero { min-height:100vh;display:flex;align-items:center; padding:120px 24px 80px; max-width:1200px;margin:0 auto; }
+.hero-grid { display:grid;grid-template-columns:1fr 1fr;gap:64px; align-items:center;width:100%; }
+.hero-content { max-width:560px; }
+.hero h1 { font-size:clamp(40px,6vw,80px); font-weight:800;line-height:1;letter-spacing:-.03em; margin-bottom:20px; }
+.hero p.subtitle { font-size:18px;line-height:1.7;color:var(--text-secondary); max-width:440px;margin-bottom:32px; }
+.hero .microcopy { margin-top:16px;font-size:13px;color:var(--text-secondary); display:flex;gap:8px;flex-wrap:wrap;align-items:center; }
+.video-placeholder { width:100%;aspect-ratio:16/9;background:#EDEDEA; border-radius:16px;overflow:hidden;position:relative; }
+.video-placeholder .placeholder-label { position:absolute;inset:0;display:flex;flex-direction:column;align-items:center; justify-content:center;gap:8px;color:var(--text-secondary);font-size:14px; }
+.video-placeholder .placeholder-label svg { opacity:.4; }
+
+/* ── Trust Bar ── */
+.trust-bar { background:var(--surface);border-top:1px solid var(--border); border-bottom:1px solid var(--border);padding:28px 24px; }
+.trust-bar-inner { max-width:1000px;margin:0 auto; display:grid;grid-template-columns:repeat(4,1fr);gap:16px; }
+.trust-item { display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center; }
+.trust-item svg { width:20px;height:20px;stroke:var(--text-secondary); }
+.trust-item span { font-size:12px;font-weight:600;letter-spacing:.08em; text-transform:uppercase;color:var(--text-secondary); }
+
+/* ── Sections ── */
+.section { padding:100px 24px;max-width:1200px;margin:0 auto; }
+.section-narrow { max-width:720px;margin:0 auto;text-align:center; }
+.section-title { font-size:clamp(28px,3.5vw,42px); font-weight:700;line-height:1.15;letter-spacing:-.02em; margin-bottom:16px; }
+.section-subtitle { font-size:17px;line-height:1.7;color:var(--text-secondary); max-width:560px;margin:0 auto 24px; }
+.problem-transition { font-style:italic;font-size:18px;color:var(--text); margin-top:24px;font-weight:500; }
+
+/* ── Solution ── */
+.solution-video { max-width:900px;margin:0 auto;width:100%; aspect-ratio:16/9;background:#EDEDEA;border-radius:16px; overflow:hidden;position:relative; }
+.solution-video .placeholder-label { position:absolute;inset:0;display:flex;flex-direction:column; align-items:center;justify-content:center;gap:12px; color:var(--text-secondary);font-size:14px; }
+.solution-video .placeholder-label svg { width:48px;height:48px;opacity:.4; }
+.solution-text { text-align:center;margin-top:40px; }
+.solution-text h2 { font-size:clamp(28px,3.5vw,40px);font-weight:700; letter-spacing:-.02em;margin-bottom:8px; }
+.solution-text p { font-size:17px;color:var(--text-secondary); }
+
+/* ── Design Grid ── */
+.design-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:32px;margin-top:48px; }
+.design-card { background:var(--white);border:1px solid var(--border); border-radius:16px;padding:36px 28px;transition:box-shadow .3s; }
+.design-card:hover { box-shadow:0 8px 32px rgba(0,0,0,.06); }
+.design-card svg { width:28px;height:28px;stroke:var(--text);margin-bottom:16px; }
+.design-card h3 { font-size:18px;font-weight:700;margin-bottom:8px; }
+.design-card p { font-size:15px;color:var(--text-secondary);line-height:1.6; }
+
+/* ── Specs ── */
+.specs-table { max-width:640px;margin:40px auto 0; }
+.spec-row { display:flex;justify-content:space-between;padding:14px 0; border-bottom:1px solid var(--border);font-size:15px; }
+.spec-row:last-child { border-bottom:none; }
+.spec-label { color:var(--text-secondary); }
+.spec-value { font-weight:600;text-align:right; }
+
+/* ── Testimonials ── */
+.testimonials-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:48px; }
+.testimonial-card { background:var(--white);border:1px solid var(--border); border-radius:16px;padding:28px;text-align:left; }
+.stars { color:#F59E0B;font-size:16px;margin-bottom:12px;letter-spacing:2px; }
+.testimonial-quote { font-size:15px;line-height:1.7;color:var(--text); margin-bottom:16px;font-style:italic; }
+.testimonial-author { font-size:14px;font-weight:600; }
+.testimonial-city { font-size:13px;color:var(--text-secondary); }
+
+/* ═══════════════════════════════════ */
+/* ── CONFIGURATOR ── */
+/* ═══════════════════════════════════ */
+.configurator-section { padding:100px 24px; background:var(--surface); border-top:1px solid var(--border);border-bottom:1px solid var(--border); }
+.configurator-inner { max-width:800px;margin:0 auto; }
+.config-step { margin-top:48px; transition:opacity .4s ease,transform .4s ease; }
+.config-step.entering { animation:fadeUp .5s cubic-bezier(.16,1,.3,1) forwards; }
+.step-label { font-size:13px;font-weight:600;color:var(--text-secondary); margin-bottom:8px;letter-spacing:.04em; }
+.step-title { font-size:24px;font-weight:700;margin-bottom:6px; }
+.step-subtitle { font-size:15px;color:var(--text-secondary);margin-bottom:24px; }
+
+/* Option cards */
+.option-grid-2 { display:grid;grid-template-columns:1fr 1fr;gap:16px; }
+.option-grid-4 { display:grid;grid-template-columns:repeat(4,1fr);gap:12px; }
+.option-card {
+  background:var(--white);border:2px solid var(--border);
+  border-radius:14px;padding:24px 20px;cursor:pointer;
+  transition:all .2s ease;text-align:center;position:relative;
+  outline:none;
+}
+.option-card:hover { border-color:#C0C0BA; }
+.option-card:focus-visible { box-shadow:0 0 0 3px rgba(26,26,26,.2); }
+.option-card.selected { border-color:var(--accent);background:#F8F8F5; }
+.option-card.selected::after {
+  content:'';position:absolute;top:12px;right:12px;
+  width:20px;height:20px;border-radius:50%;background:var(--accent);
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
+  background-size:14px;background-repeat:no-repeat;background-position:center;
+}
+.option-card svg.card-icon { width:32px;height:32px;stroke:var(--text);margin:0 auto 12px;display:block; }
+.option-card .card-title { font-size:16px;font-weight:700;margin-bottom:4px; }
+.option-card .card-desc { font-size:13px;color:var(--text-secondary);line-height:1.5; }
+.option-card .card-price { font-size:14px;font-weight:600;margin-top:8px;color:var(--text); }
+.option-card .card-badge { font-size:11px;color:var(--text-secondary);margin-top:2px; }
+
+/* Color swatches */
+.color-grid { display:grid;grid-template-columns:repeat(5,1fr);gap:12px; }
+.color-card {
+  background:var(--white);border:2px solid var(--border);
+  border-radius:14px;padding:20px 12px;cursor:pointer;
+  transition:all .2s ease;text-align:center;position:relative;outline:none;
+}
+.color-card:hover { border-color:#C0C0BA; }
+.color-card:focus-visible { box-shadow:0 0 0 3px rgba(26,26,26,.2); }
+.color-card.selected { border-color:var(--accent);background:#F8F8F5; }
+.color-card.selected::after {
+  content:'';position:absolute;top:10px;right:10px;
+  width:18px;height:18px;border-radius:50%;background:var(--accent);
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
+  background-size:12px;background-repeat:no-repeat;background-position:center;
+}
+.color-swatch {
+  width:48px;height:48px;border-radius:50%;margin:0 auto 10px;
+  border:2px solid var(--border);
+  transition:transform .2s;
+}
+.color-card.selected .color-swatch { transform:scale(1.1); }
+.color-card .card-title { font-size:13px;font-weight:600; }
+.color-card .card-price { font-size:12px;color:var(--text-secondary);margin-top:2px; }
+
+/* Monitor pair selector */
+.monitor-pair { display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:16px; }
+.monitor-pair-label { font-size:14px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:6px; }
+.monitor-pair-label svg { width:16px;height:16px;stroke:var(--text-secondary); }
+
+/* Summary */
+.summary-card {
+  background:var(--white);border:1px solid var(--border);
+  border-radius:20px;padding:36px 32px;margin-top:32px;
+}
+.summary-row { display:flex;justify-content:space-between;padding:10px 0; font-size:15px; }
+.summary-row.total { border-top:2px solid var(--text);margin-top:12px;padding-top:16px; }
+.summary-row.total span:last-child { font-size:28px;font-weight:800; }
+.summary-dims { font-size:14px;color:var(--text-secondary);margin-top:8px; padding:12px 16px;background:var(--surface);border-radius:10px; display:flex;align-items:center;gap:8px; }
+.summary-dims svg { width:16px;height:16px;stroke:var(--text-secondary);flex-shrink:0; }
+.config-preview {
+  display:flex;align-items:center;justify-content:center;gap:12px;
+  padding:20px;margin-bottom:20px;background:var(--surface);border-radius:14px;
+}
+.config-preview .preview-swatch {
+  width:36px;height:36px;border-radius:8px;border:2px solid var(--border);
+}
+.config-preview .preview-text { font-size:14px;color:var(--text-secondary); }
+.config-preview .preview-text strong { color:var(--text); }
+.payment-icons { display:flex;gap:8px;justify-content:center;margin-top:16px; }
+.payment-icons span { font-size:11px;font-weight:600;color:var(--text-secondary); border:1px solid var(--border);padding:4px 10px;border-radius:6px; }
+.buy-microcopy { text-align:center;font-size:13px;color:var(--text-secondary);margin-top:14px; }
+
+/* ── Order Tracking ── */
+.tracking-form { max-width:480px;margin:32px auto 0;display:flex;gap:12px; }
+.tracking-form input { flex:1;padding:14px 18px;font-size:16px;font-family:inherit; border:1px solid var(--border);border-radius:12px; background:var(--white);outline:none;transition:border-color .2s; }
+.tracking-form input:focus { border-color:var(--accent); }
+.tracking-form button { padding:14px 24px;font-size:15px;font-weight:600; background:var(--accent);color:var(--white); border:none;border-radius:12px;cursor:pointer; white-space:nowrap;transition:opacity .2s; }
+.tracking-form button:hover { opacity:.85; }
+.tracking-result { max-width:520px;margin:32px auto 0; background:var(--white);border:1px solid var(--border); border-radius:16px;padding:32px;display:none; }
+.tracking-result.show { display:block; }
+.tracking-error { max-width:520px;margin:24px auto 0;text-align:center; padding:20px;background:#FEF2F2;border:1px solid #FECACA; border-radius:12px;color:var(--red);font-size:15px;display:none; }
+.tracking-error.show { display:block; }
+.order-header { margin-bottom:24px; }
+.order-id { font-size:13px;color:var(--text-secondary);margin-bottom:4px; }
+.order-name { font-size:20px;font-weight:700; }
+.order-meta { display:flex;gap:24px;margin-top:8px;font-size:14px;color:var(--text-secondary); }
+.progress-track { display:flex;justify-content:space-between;position:relative; margin:32px 0 24px;padding:0 4px; }
+.progress-track::before { content:'';position:absolute;top:16px;left:24px;right:24px; height:3px;background:var(--border);z-index:0; }
+.progress-track .progress-fill { position:absolute;top:16px;left:24px;height:3px; background:var(--green);z-index:1;transition:width .6s ease; }
+.progress-step { display:flex;flex-direction:column;align-items:center;gap:8px; position:relative;z-index:2;flex:1; }
+.progress-dot { width:32px;height:32px;border-radius:50%; background:var(--border);display:flex;align-items:center; justify-content:center;transition:background .3s; }
+.progress-dot svg { width:16px;height:16px;stroke:var(--white); }
+.progress-dot.active { background:var(--green); }
+.progress-dot.active.amber { background:var(--amber); }
+.progress-dot.active.blue { background:var(--blue); }
+.progress-dot.active.green-dark { background:var(--green-dark); }
+.progress-label { font-size:11px;font-weight:600;color:var(--text-secondary);text-align:center; }
+.progress-label.active { color:var(--text); }
+.order-eta { font-size:14px;color:var(--text-secondary); padding-top:16px;border-top:1px solid var(--border); }
+.btn-whatsapp { display:inline-flex;align-items:center;gap:8px; background:var(--whatsapp);color:var(--white); font-size:14px;font-weight:600;padding:10px 20px; border-radius:9999px;text-decoration:none; margin-top:16px;transition:opacity .2s; }
+.btn-whatsapp:hover { opacity:.9; }
+
+/* ── FAQ ── */
+.faq-section { padding:100px 24px;background:var(--surface); border-top:1px solid var(--border); }
+.faq-list { max-width:640px;margin:40px auto 0; }
+.faq-item { border-bottom:1px solid var(--border);overflow:hidden; }
+.faq-question { width:100%;background:none;border:none;text-align:left; padding:20px 0;font-size:16px;font-weight:600;font-family:inherit; color:var(--text);cursor:pointer;display:flex; justify-content:space-between;align-items:center; }
+.faq-question svg { width:20px;height:20px;transition:transform .3s;flex-shrink:0; }
+.faq-item.open .faq-question svg { transform:rotate(45deg); }
+.faq-answer { max-height:0;overflow:hidden;transition:max-height .4s ease,padding .4s ease; font-size:15px;color:var(--text-secondary);line-height:1.7; }
+.faq-item.open .faq-answer { max-height:200px;padding-bottom:20px; }
+
+/* ── Footer ── */
+footer { padding:48px 24px;text-align:center;border-top:1px solid var(--border); }
+footer .logo-footer { font-weight:800;font-size:16px;letter-spacing:.18em;margin-bottom:8px; }
+footer p { font-size:13px;color:var(--text-secondary); }
+footer a { color:var(--whatsapp);text-decoration:none; }
+
+/* ── WhatsApp fab ── */
+.whatsapp-fab { position:fixed;bottom:24px;right:24px;z-index:90; width:56px;height:56px;border-radius:50%; background:var(--whatsapp);display:flex;align-items:center; justify-content:center;box-shadow:0 4px 16px rgba(37,211,102,.3); text-decoration:none;transition:transform .2s; }
+.whatsapp-fab:hover { transform:scale(1.08); }
+.whatsapp-fab svg { width:28px;height:28px;fill:white; }
+
+/* ── Modal ── */
+.modal-overlay { display:none;position:fixed;inset:0;z-index:200; background:rgba(0,0,0,.5);backdrop-filter:blur(8px); align-items:center;justify-content:center; }
+.modal-overlay.open { display:flex; }
+.modal-box { background:var(--white);border-radius:20px; max-width:440px;width:90%;padding:40px;position:relative; max-height:90vh;overflow-y:auto; }
+.modal-close { position:absolute;top:16px;right:16px;background:none; border:none;cursor:pointer;font-size:20px;color:var(--text-secondary); }
+.modal-box h3 { font-size:22px;font-weight:700;margin-bottom:8px; }
+.modal-box .modal-sub { font-size:14px;color:var(--text-secondary);margin-bottom:24px; }
+.modal-input { width:100%;padding:12px 16px;border:1px solid var(--border); border-radius:10px;font-size:15px;font-family:inherit;outline:none;margin-bottom:12px; }
+.modal-input:focus { border-color:var(--accent); }
+.modal-row { display:flex;gap:12px; }
+.modal-row .modal-input { flex:1; }
+.modal-summary { display:flex;justify-content:space-between;align-items:center; padding:16px;background:var(--surface);border-radius:12px;margin:20px 0; font-size:15px; }
+.modal-summary strong { font-size:18px; }
+
+/* ── Responsive ── */
+@media(max-width:768px){
+  .nav-links{display:none} .hamburger{display:block}
+  .hero-grid{grid-template-columns:1fr;gap:40px}
+  .hero{padding:100px 24px 60px;min-height:auto}
+  .hero h1{font-size:36px}
+  .trust-bar-inner{grid-template-columns:repeat(2,1fr);gap:20px}
+  .design-grid{grid-template-columns:1fr}
+  .testimonials-grid{grid-template-columns:1fr}
+  .tracking-form{flex-direction:column}
+  .progress-label{font-size:10px}
+  .order-meta{flex-direction:column;gap:4px}
+  .option-grid-2{grid-template-columns:1fr}
+  .option-grid-4{grid-template-columns:1fr 1fr}
+  .color-grid{grid-template-columns:repeat(3,1fr)}
+  .monitor-pair{grid-template-columns:1fr}
+  .config-preview{flex-wrap:wrap}
+}
+@media(max-width:400px){
+  .color-grid{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+<body>
+
+<!-- ════════ NAVBAR ════════ -->
+<nav class="navbar" id="navbar">
+  <div class="navbar-inner">
+    <a href="#" class="logo">ALITOSHI</a>
+    <div class="nav-links">
+      <a href="#mueble">El Mueble</a>
+      <a href="#diseno">Diseño</a>
+      <a href="#specs">Especificaciones</a>
+      <a href="#tracking">Rastrear Pedido</a>
+      <a href="#faq">FAQ</a>
+      <a href="#comprar" class="btn-primary">Configurar y Comprar</a>
+    </div>
+    <button class="hamburger" id="hamburgerBtn" aria-label="Menú"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#mueble" onclick="closeMobile()">El Mueble</a>
+  <a href="#diseno" onclick="closeMobile()">Diseño</a>
+  <a href="#specs" onclick="closeMobile()">Especificaciones</a>
+  <a href="#tracking" onclick="closeMobile()">Rastrear Pedido</a>
+  <a href="#faq" onclick="closeMobile()">FAQ</a>
+  <a href="#comprar" class="btn-primary" onclick="closeMobile()" style="text-align:center;margin-top:12px;">Configurar y Comprar</a>
+</div>
+
+<!-- ════════ HERO ════════ -->
+<section class="hero" id="hero">
+  <div class="hero-grid">
+    <div class="hero-content">
+      <h1 class="animate-fade-up">Tu espacio.<br>Transformado.</h1>
+      <p class="subtitle animate-fade-up delay-2">Un mueble de pared que se pliega en segundos. Diseñado para quienes valoran cada centímetro.</p>
+      <a href="#comprar" class="btn-primary animate-fade-up delay-3" style="font-size:16px;padding:14px 32px;">Configura el Tuyo</a>
+      <div class="microcopy animate-fade-up delay-4">
+        <span>Envío a todo Ecuador</span><span>·</span>
+        <span>Garantía de 1 año</span><span>·</span>
+        <span>Pago seguro</span>
+      </div>
+    </div>
+    <div class="video-placeholder animate-fade-up delay-3" style="background:#F0EFEB;">
+      <canvas id="heroCanvas" style="width:100%;height:100%;display:block;"></canvas>
+    </div>
+  </div>
+</section>
+
+<!-- ════════ TRUST BAR ════════ -->
+<div class="trust-bar">
+  <div class="trust-bar-inner reveal">
+    <div class="trust-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+      <span>Hecho en Ecuador</span>
+    </div>
+    <div class="trust-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      <span>Plegado en 5 seg</span>
+    </div>
+    <div class="trust-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <span>Soporta 50 kg</span>
+    </div>
+    <div class="trust-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+      <span>Envío 48–72h</span>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ PROBLEM ════════ -->
+<section class="section" id="mueble" style="text-align:center;">
+  <div class="section-narrow reveal">
+    <h2 class="section-title">¿Tu escritorio ocupa más espacio del que debería?</h2>
+    <p class="section-subtitle">Trabajas desde casa. Vives en un apartamento. Cada centímetro cuenta. Pero tu escritorio se queda ahí, ocupando lugar incluso cuando no lo usas.</p>
+    <p class="problem-transition">ALITOSHI resuelve eso.</p>
+  </div>
+</section>
+
+<!-- ════════ SOLUTION ════════ -->
+<section class="section" style="padding-top:60px;">
+  <div class="solution-video reveal" style="background:#F0EFEB;">
+    <canvas id="solutionCanvas" style="width:100%;height:100%;display:block;"></canvas>
+  </div>
+  <div class="solution-text reveal">
+    <h2>Se abre. Trabajas. Se cierra.</h2>
+    <p>De decoración a escritorio funcional en un movimiento.</p>
+  </div>
+</section>
+
+<!-- ════════ DESIGN ════════ -->
+<section class="section" id="diseno">
+  <div class="section-narrow reveal">
+    <h2 class="section-title">Diseñado para durar</h2>
+    <p class="section-subtitle">Cada detalle está pensado para que te olvides de que es un mueble plegable.</p>
+  </div>
+  <div class="design-grid">
+    <div class="design-card reveal">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      <h3>Ingeniería silenciosa</h3>
+      <p>Bisagras probadas para 10,000 ciclos de apertura y cierre. Sin ruido, sin desgaste.</p>
+    </div>
+    <div class="design-card reveal">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.912 5.813a2 2 0 0 0 1.275 1.275L21 12l-5.813 1.912a2 2 0 0 0-1.275 1.275L12 21l-1.912-5.813a2 2 0 0 0-1.275-1.275L3 12l5.813-1.912a2 2 0 0 0 1.275-1.275L12 3z"/></svg>
+      <h3>Estética que perdura</h3>
+      <p>Tablero RH con acabado mate anti-huellas. Se ve impecable con el tiempo.</p>
+    </div>
+    <div class="design-card reveal">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+      <h3>Mecanismo probado</h3>
+      <p>Sistema de apertura suave con bloqueo vertical. Firme cuando lo usas, invisible cuando no.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ════════ SPECS ════════ -->
+<section id="specs" style="background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:100px 24px;">
+  <div style="max-width:1200px;margin:0 auto;">
+    <div class="section-narrow reveal">
+      <h2 class="section-title">Especificaciones</h2>
+      <p class="section-subtitle">Cada número, pensado.</p>
+    </div>
+    <div class="specs-table reveal">
+      <div class="spec-row"><span class="spec-label">Medidas abierto</span><span class="spec-value">Según configuración</span></div>
+      <div class="spec-row"><span class="spec-label">Medidas cerrado</span><span class="spec-value">Ancho × 15 × 75 cm</span></div>
+      <div class="spec-row"><span class="spec-label">Peso</span><span class="spec-value">14–22 kg</span></div>
+      <div class="spec-row"><span class="spec-label">Material</span><span class="spec-value">Tablero RH 18mm</span></div>
+      <div class="spec-row"><span class="spec-label">Capacidad</span><span class="spec-value">50 kg distribuidos</span></div>
+      <div class="spec-row"><span class="spec-label">Acabado</span><span class="spec-value">5 colores mate anti-huellas</span></div>
+      <div class="spec-row"><span class="spec-label">Instalación</span><span class="spec-value">Kit incluido, 20–30 min</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════ TESTIMONIALS ════════ -->
+<section class="section">
+  <div class="section-narrow reveal">
+    <h2 class="section-title">Lo que dicen nuestros clientes</h2>
+  </div>
+  <div class="testimonials-grid" style="max-width:1000px;margin:48px auto 0;">
+    <div class="testimonial-card reveal">
+      <div class="stars">★★★★★</div>
+      <p class="testimonial-quote">"Vivo en un departamento de 45m² y este escritorio cambió mi rutina. Cuando termino de trabajar, lo cierro y tengo mi sala de vuelta."</p>
+      <p class="testimonial-author">María F.</p>
+      <p class="testimonial-city">Quito</p>
+    </div>
+    <div class="testimonial-card reveal">
+      <div class="stars">★★★★★</div>
+      <p class="testimonial-quote">"La calidad del material y las bisagras me sorprendió. Se siente robusto y se ve elegante cerrado. Mis amigos piensan que es un cuadro."</p>
+      <p class="testimonial-author">Carlos M.</p>
+      <p class="testimonial-city">Guayaquil</p>
+    </div>
+    <div class="testimonial-card reveal">
+      <div class="stars">★★★★★</div>
+      <p class="testimonial-quote">"Lo instalé yo sola en 25 minutos. Las instrucciones son clarísimas. Ahora tengo escritorio y espacio para yoga."</p>
+      <p class="testimonial-author">Ana P.</p>
+      <p class="testimonial-city">Cuenca</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- ════════ CONFIGURATOR (replaces Pricing) ════════ -->
+<!-- ═══════════════════════════════════════════════ -->
+<section class="configurator-section" id="comprar">
+  <div class="configurator-inner">
+    <div class="section-narrow reveal">
+      <h2 class="section-title">Configura tu ALITOSHI</h2>
+      <p class="section-subtitle">Elige tu configuración ideal y ve el precio en tiempo real.</p>
+    </div>
+
+    <!-- STEP 1: Monitor Count -->
+    <div class="config-step entering" id="step1">
+      <p class="step-label">Paso 1 de 3</p>
+      <h3 class="step-title">¿Cuántos monitores usarás?</h3>
+      <p class="step-subtitle">Elige la configuración que se adapte a tu flujo de trabajo.</p>
+      <div class="option-grid-2">
+        <div class="option-card" tabindex="0" role="button" aria-pressed="false" onclick="selectMonitorCount(1)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectMonitorCount(1)}" id="mc1">
+          <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          <p class="card-title">Un Monitor</p>
+          <p class="card-desc">Configuración compacta para trabajo enfocado.</p>
+          <p class="card-price">Desde $199</p>
+        </div>
+        <div class="option-card" tabindex="0" role="button" aria-pressed="false" onclick="selectMonitorCount(2)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectMonitorCount(2)}" id="mc2">
+          <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="14" height="10" rx="1.5"/><rect x="9" y="4" width="14" height="10" rx="1.5"/><line x1="6" y1="18" x2="12" y2="18"/><line x1="8" y1="14" x2="8" y2="18"/><line x1="14" y1="18" x2="20" y2="18"/><line x1="17" y1="14" x2="17" y2="18"/></svg>
+          <p class="card-title">Dos Monitores</p>
+          <p class="card-desc">Máxima productividad para multitarea.</p>
+          <p class="card-price">Desde $249</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 2: Monitor Size -->
+    <div class="config-step" id="step2" style="display:none;">
+      <p class="step-label">Paso 2 de 3</p>
+      <h3 class="step-title" id="step2Title">¿De qué tamaño es tu monitor?</h3>
+      <p class="step-subtitle">Selecciona el tamaño para calcular las dimensiones exactas del mueble.</p>
+
+      <!-- Single monitor selector -->
+      <div id="singleSizeSelector">
+        <div class="option-grid-4" id="sizeGrid1"></div>
+      </div>
+
+      <!-- Dual monitor selector -->
+      <div id="dualSizeSelector" style="display:none;">
+        <div class="monitor-pair">
+          <div>
+            <p class="monitor-pair-label">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 18 9 12"/></svg>
+              Monitor Izquierdo
+            </p>
+            <div class="option-grid-4" id="sizeGridL"></div>
+          </div>
+          <div>
+            <p class="monitor-pair-label">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 18 15 12"/></svg>
+              Monitor Derecho
+            </p>
+            <div class="option-grid-4" id="sizeGridR"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3: Color -->
+    <div class="config-step" id="step3" style="display:none;">
+      <p class="step-label">Paso 3 de 3</p>
+      <h3 class="step-title">Elige el color del tablero</h3>
+      <p class="step-subtitle">Todos los acabados son mate anti-huellas.</p>
+      <div class="color-grid" id="colorGrid"></div>
+    </div>
+
+    <!-- SUMMARY -->
+    <div class="config-step" id="stepSummary" style="display:none;">
+      <div class="summary-card">
+        <h3 style="font-size:20px;font-weight:700;margin-bottom:20px;">Tu configuración</h3>
+        <div class="config-preview" id="configPreview"></div>
+        <div id="summaryRows"></div>
+        <div class="summary-dims" id="summaryDims"></div>
+        <div style="margin-top:28px;">
+          <button class="btn-primary" id="buyBtn" style="width:100%;justify-content:center;padding:16px 32px;font-size:16px;" onclick="handleCheckout()">Comprar Ahora — $199</button>
+          <div class="buy-microcopy">Envío gratis · Garantía de 1 año · Pago seguro</div>
+          <div class="payment-icons">
+            <span>VISA</span><span>Mastercard</span><span>Diners</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════ ORDER TRACKING ════════ -->
+<section class="section" id="tracking" style="text-align:center;">
+  <div class="section-narrow reveal">
+    <h2 class="section-title">Rastrea tu pedido</h2>
+    <p class="section-subtitle">Ingresa tu número de orden para ver el estado de tu compra.</p>
+  </div>
+  <div class="tracking-form reveal">
+    <input type="text" id="orderInput" placeholder="Ej: ALI-2026-00123" autocomplete="off">
+    <button onclick="trackOrder()">Consultar Estado</button>
+  </div>
+  <div class="tracking-error" id="trackingError">
+    No encontramos ese pedido. Verifica el número o <a href="https://wa.me/593999999999" target="_blank" style="color:var(--whatsapp);font-weight:600;">contáctanos por WhatsApp</a>.
+  </div>
+  <div class="tracking-result" id="trackingResult">
+    <div class="order-header" style="text-align:left;">
+      <p class="order-id" id="orderId"></p>
+      <p class="order-name" id="orderName"></p>
+      <div class="order-meta"><span id="orderDate"></span><span id="orderCity"></span></div>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill"></div>
+      <div class="progress-step">
+        <div class="progress-dot" id="dot0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <span class="progress-label" id="label0">Confirmado</span>
+      </div>
+      <div class="progress-step">
+        <div class="progress-dot" id="dot1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 12l-8.5 8.5c-.83.83-2.17.83-3 0a2.12 2.12 0 0 1 0-3L12 9"/><path d="M17.64 15 22 10.64"/></svg></div>
+        <span class="progress-label" id="label1">Producción</span>
+      </div>
+      <div class="progress-step">
+        <div class="progress-dot" id="dot2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
+        <span class="progress-label" id="label2">Enviado</span>
+      </div>
+      <div class="progress-step">
+        <div class="progress-dot" id="dot3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14"/><polyline points="7.5 4.27 12 6.81 16.5 4.27"/><polyline points="3.29 7 12 11.47 20.71 7"/><line x1="12" y1="22" x2="12" y2="11.47"/><path d="m17 13 5 5m0-5-5 5"/></svg></div>
+        <span class="progress-label" id="label3">Entregado</span>
+      </div>
+    </div>
+    <div class="order-eta" style="text-align:left;">
+      <span>Entrega estimada: <strong id="orderEta"></strong></span>
+    </div>
+    <div style="text-align:center;">
+      <a href="https://wa.me/593999999999" target="_blank" class="btn-whatsapp">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.111.553 4.095 1.516 5.817L.057 23.764l6.114-1.424A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.82c-1.87 0-3.633-.5-5.15-1.378l-.37-.22-3.826.89.927-3.712-.24-.382A9.78 9.78 0 0 1 2.18 12c0-5.422 4.398-9.82 9.82-9.82 5.422 0 9.82 4.398 9.82 9.82 0 5.422-4.398 9.82-9.82 9.82z"/></svg>
+        ¿Dudas? Escríbenos por WhatsApp
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ════════ FAQ ════════ -->
+<section class="faq-section" id="faq">
+  <div style="max-width:1200px;margin:0 auto;">
+    <div class="section-narrow reveal">
+      <h2 class="section-title">Preguntas frecuentes</h2>
+    </div>
+    <div class="faq-list reveal">
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">¿Es difícil de instalar?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+        <div class="faq-answer">No. Incluye un kit de instalación completo y una guía ilustrada paso a paso. La mayoría de usuarios lo instalan en 20-30 minutos con un taladro básico.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">¿Soporta el peso de una laptop y monitores?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+        <div class="faq-answer">Sí. Soporta hasta 50 kg distribuidos. Una laptop, monitor, teclado y taza de café están muy dentro del rango.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">¿Cuánto tarda el envío?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+        <div class="faq-answer">Entre 48 y 72 horas a ciudades principales. Para ciudades más pequeñas, entre 4 y 7 días hábiles. El envío es gratuito a todo Ecuador.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">¿Qué pasa si no me gusta?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+        <div class="faq-answer">Tienes 30 días para devolverlo sin preguntas. Si no te convence, te devolvemos tu dinero. Sin letra pequeña.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">¿Puedo elegir el color del tablero?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+        <div class="faq-answer">Sí, ofrecemos 5 acabados: Negro Mate, Blanco Nieve, Roble Natural, Nogal Oscuro y Gris Cemento.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">¿Funciona en cualquier pared?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+        <div class="faq-answer">Funciona en paredes de ladrillo, bloque y hormigón. Para paredes de drywall, se requieren anclajes especiales (incluidos en el kit).</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════ FOOTER ════════ -->
+<footer>
+  <p class="logo-footer">ALITOSHI</p>
+  <p>Muebles plegables de pared — Hecho en Ecuador</p>
+  <p style="margin-top:8px;">¿Preguntas? <a href="https://wa.me/593999999999" target="_blank">Escríbenos por WhatsApp</a></p>
+  <p style="margin-top:16px;">© 2026 ALITOSHI. Todos los derechos reservados.</p>
+</footer>
+
+<!-- WhatsApp FAB -->
+<a href="https://wa.me/593999999999" target="_blank" class="whatsapp-fab" aria-label="WhatsApp">
+  <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.111.553 4.095 1.516 5.817L.057 23.764l6.114-1.424A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.82c-1.87 0-3.633-.5-5.15-1.378l-.37-.22-3.826.89.927-3.712-.24-.382A9.78 9.78 0 0 1 2.18 12c0-5.422 4.398-9.82 9.82-9.82 5.422 0 9.82 4.398 9.82 9.82 0 5.422-4.398 9.82-9.82 9.82z"/></svg>
+</a>
+
+<!-- ════════ CHECKOUT MODAL ════════ -->
+<div class="modal-overlay" id="checkoutModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeCheckout()">✕</button>
+    <h3>Checkout</h3>
+    <p class="modal-sub">Simulación de pago — Modo test</p>
+    <input class="modal-input" type="text" placeholder="Nombre completo" id="chkName">
+    <input class="modal-input" type="email" placeholder="Email" id="chkEmail">
+    <input class="modal-input" type="text" placeholder="Ciudad" id="chkCity">
+    <input class="modal-input" type="text" placeholder="4242 4242 4242 4242">
+    <div class="modal-row">
+      <input class="modal-input" type="text" placeholder="MM/AA">
+      <input class="modal-input" type="text" placeholder="CVC">
+    </div>
+    <div class="modal-summary">
+      <span id="chkConfigLabel">ALITOSHI Escritorio</span>
+      <strong id="chkPrice">$199</strong>
+    </div>
+    <button class="btn-primary" style="width:100%;justify-content:center;padding:14px;font-size:16px;" onclick="simulatePayment()" id="chkPayBtn">Pagar $199</button>
+    <p style="font-size:12px;color:var(--text-secondary);text-align:center;margin-top:12px;">Simulación con Stripe Test Mode</p>
+  </div>
+</div>
+
+<!-- ════════ SUCCESS MODAL ════════ -->
+<div class="modal-overlay" id="successModal">
+  <div class="modal-box" style="text-align:center;padding:48px 40px;">
+    <div style="width:56px;height:56px;border-radius:50%;background:#DCFCE7;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <h3 style="font-size:22px;font-weight:700;margin-bottom:8px;">Pedido confirmado</h3>
+    <p style="font-size:15px;color:var(--text-secondary);margin-bottom:8px;">Tu número de orden es:</p>
+    <p id="generatedOrderId" style="font-size:20px;font-weight:700;margin-bottom:4px;font-family:monospace;"></p>
+    <p id="generatedConfig" style="font-size:14px;color:var(--text-secondary);margin-bottom:24px;"></p>
+    <p style="font-size:14px;color:var(--text-secondary);margin-bottom:24px;">Recibirás un email de confirmación. Puedes rastrear tu pedido en la sección de seguimiento.</p>
+    <button class="btn-primary" style="padding:12px 28px;" onclick="closeSuccess()">Entendido</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════ -->
+<!-- ════════ JAVASCRIPT ════════ -->
+<!-- ═══════════════════════════════════ -->
+<script>
+// ── roundRect polyfill ──
+if (!CanvasRenderingContext2D.prototype.roundRect) {
+  CanvasRenderingContext2D.prototype.roundRect = function(x,y,w,h,r) {
+    if (typeof r === 'number') r = [r,r,r,r];
+    if (Array.isArray(r) && r.length === 1) r = [r[0],r[0],r[0],r[0]];
+    if (Array.isArray(r) && r.length < 4) while(r.length < 4) r.push(0);
+    const [tl,tr,br,bl] = r;
+    this.moveTo(x+tl,y);
+    this.lineTo(x+w-tr,y); this.quadraticCurveTo(x+w,y,x+w,y+tr);
+    this.lineTo(x+w,y+h-br); this.quadraticCurveTo(x+w,y+h,x+w-br,y+h);
+    this.lineTo(x+bl,y+h); this.quadraticCurveTo(x,y+h,x,y+h-bl);
+    this.lineTo(x,y+tl); this.quadraticCurveTo(x,y,x+tl,y);
+    this.closePath();
+    return this;
+  };
+}
+
+// ── DATA ──
+const SIZES = {
+  '22': { w:48.7, h:27.4, label:'22"', adj:0 },
+  '24': { w:53.1, h:29.9, label:'24"', adj:20 },
+  '27': { w:54.9, h:33.6, label:'27"', adj:40 },
+  '32': { w:70.8, h:39.9, label:'32"', adj:70 },
+};
+const COLORS = [
+  { id:'negro',   name:'Negro Mate',     hex:'#1A1A1A', adj:0  },
+  { id:'blanco',  name:'Blanco Nieve',   hex:'#F0EDE8', adj:0  },
+  { id:'roble',   name:'Roble Natural',  hex:'#C4A882', adj:15 },
+  { id:'nogal',   name:'Nogal Oscuro',   hex:'#5C4033', adj:15 },
+  { id:'gris',    name:'Gris Cemento',   hex:'#8E8E8E', adj:10 },
+];
+const BASE = { 1:199, 2:249 };
+const orders = {
+  "ALI-2026-00123":{ nombre:"María Fernández", fecha:"2026-09-10", estado:"enviado", fechaEstimada:"2026-09-20", ciudad:"Quito" },
+  "ALI-2026-00124":{ nombre:"Carlos Mendoza", fecha:"2026-09-12", estado:"produccion", fechaEstimada:"2026-09-25", ciudad:"Guayaquil" },
+  "ALI-2026-00125":{ nombre:"Ana Paredes", fecha:"2026-09-15", estado:"confirmado", fechaEstimada:"2026-09-30", ciudad:"Cuenca" },
+};
+
+// ── STATE ──
+let monitorCount = null;
+let sizeLeft = null;
+let sizeRight = null;
+let selectedColor = null;
+
+// ── INIT: Build size grids & color grid ──
+const sizeKeys = ['22','24','27','32'];
+
+function buildSizeCards(containerId, onSelect, stateGetter) {
+  const el = document.getElementById(containerId);
+  el.innerHTML = '';
+  sizeKeys.forEach(k => {
+    const s = SIZES[k];
+    const card = document.createElement('div');
+    card.className = 'option-card';
+    card.tabIndex = 0;
+    card.setAttribute('role','button');
+    card.setAttribute('aria-pressed','false');
+    card.setAttribute('data-size', k);
+    card.innerHTML = `
+      <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+      <p class="card-title">${s.label}</p>
+      <p class="card-badge">${s.w} × ${s.h} cm</p>
+      <p class="card-price">${s.adj === 0 ? 'Incluido' : '+$' + s.adj}</p>
+    `;
+    card.onclick = () => onSelect(k, containerId);
+    card.onkeydown = (e) => { if(e.key==='Enter'||e.key===' '){e.preventDefault();onSelect(k,containerId);} };
+    el.appendChild(card);
+  });
+}
+
+function buildColorGrid() {
+  const el = document.getElementById('colorGrid');
+  el.innerHTML = '';
+  COLORS.forEach(c => {
+    const card = document.createElement('div');
+    card.className = 'color-card';
+    card.tabIndex = 0;
+    card.setAttribute('role','button');
+    card.setAttribute('aria-pressed','false');
+    card.setAttribute('data-color', c.id);
+    const border = c.id === 'blanco' ? '#D5D5D0' : c.hex;
+    card.innerHTML = `
+      <div class="color-swatch" style="background:${c.hex};border-color:${border};"></div>
+      <p class="card-title">${c.name}</p>
+      <p class="card-price">${c.adj === 0 ? 'Incluido' : '+$' + c.adj}</p>
+    `;
+    card.onclick = () => selectColor(c.id);
+    card.onkeydown = (e) => { if(e.key==='Enter'||e.key===' '){e.preventDefault();selectColor(c.id);} };
+    el.appendChild(card);
+  });
+}
+buildColorGrid();
+
+// ── SELECT FUNCTIONS ──
+
+function selectMonitorCount(n) {
+  monitorCount = n;
+  sizeLeft = null; sizeRight = null; selectedColor = null;
+
+  // highlight
+  document.getElementById('mc1').classList.toggle('selected', n===1);
+  document.getElementById('mc1').setAttribute('aria-pressed', n===1);
+  document.getElementById('mc2').classList.toggle('selected', n===2);
+  document.getElementById('mc2').setAttribute('aria-pressed', n===2);
+
+  // show step 2
+  const s2 = document.getElementById('step2');
+  s2.style.display = '';
+  s2.classList.remove('entering');
+  void s2.offsetWidth;
+  s2.classList.add('entering');
+
+  document.getElementById('step2Title').textContent = n===1
+    ? '¿De qué tamaño es tu monitor?'
+    : '¿De qué tamaño son tus monitores?';
+
+  if (n === 1) {
+    document.getElementById('singleSizeSelector').style.display = '';
+    document.getElementById('dualSizeSelector').style.display = 'none';
+    buildSizeCards('sizeGrid1', (k) => { sizeLeft = k; highlightSize('sizeGrid1',k); onSizeSelected(); });
+  } else {
+    document.getElementById('singleSizeSelector').style.display = 'none';
+    document.getElementById('dualSizeSelector').style.display = '';
+    buildSizeCards('sizeGridL', (k) => { sizeLeft = k; highlightSize('sizeGridL',k); onSizeSelected(); });
+    buildSizeCards('sizeGridR', (k) => { sizeRight = k; highlightSize('sizeGridR',k); onSizeSelected(); });
+  }
+
+  // hide later steps
+  document.getElementById('step3').style.display = 'none';
+  document.getElementById('stepSummary').style.display = 'none';
+
+  setTimeout(() => s2.scrollIntoView({behavior:'smooth',block:'center'}), 100);
+}
+
+function highlightSize(containerId, selected) {
+  const cards = document.getElementById(containerId).querySelectorAll('.option-card');
+  cards.forEach(c => {
+    const isSel = c.getAttribute('data-size') === selected;
+    c.classList.toggle('selected', isSel);
+    c.setAttribute('aria-pressed', isSel);
+  });
+}
+
+function onSizeSelected() {
+  const ready = monitorCount === 1 ? sizeLeft !== null
+    : (sizeLeft !== null && sizeRight !== null);
+  if (!ready) return;
+
+  // show step 3 (color)
+  const s3 = document.getElementById('step3');
+  s3.style.display = '';
+  s3.classList.remove('entering');
+  void s3.offsetWidth;
+  s3.classList.add('entering');
+
+  // reset color selection
+  selectedColor = null;
+  document.querySelectorAll('#colorGrid .color-card').forEach(c => {
+    c.classList.remove('selected');
+    c.setAttribute('aria-pressed','false');
+  });
+  document.getElementById('stepSummary').style.display = 'none';
+
+  setTimeout(() => s3.scrollIntoView({behavior:'smooth',block:'center'}), 100);
+}
+
+function selectColor(id) {
+  selectedColor = id;
+  document.querySelectorAll('#colorGrid .color-card').forEach(c => {
+    const isSel = c.getAttribute('data-color') === id;
+    c.classList.toggle('selected', isSel);
+    c.setAttribute('aria-pressed', isSel);
+  });
+  showSummary();
+}
+
+// ── CALCULATIONS ──
+
+function calcPrice() {
+  if (!monitorCount || !sizeLeft || !selectedColor) return 0;
+  let total = BASE[monitorCount];
+  total += SIZES[sizeLeft].adj;
+  if (monitorCount === 2 && sizeRight) total += SIZES[sizeRight].adj;
+  const colorObj = COLORS.find(c => c.id === selectedColor);
+  if (colorObj) total += colorObj.adj;
+  return total;
+}
+
+function calcDimensions() {
+  const m1 = SIZES[sizeLeft];
+  if (monitorCount === 1) {
+    return { w: Math.round(m1.w + 15), h: Math.round(m1.h + 20) };
+  }
+  const m2 = SIZES[sizeRight];
+  return {
+    w: Math.round(m1.w + m2.w + 20 + 15),
+    h: Math.round(Math.max(m1.h, m2.h) + 20),
+  };
+}
+
+// ── SUMMARY ──
+
+function showSummary() {
+  const sum = document.getElementById('stepSummary');
+  sum.style.display = '';
+  sum.classList.remove('entering');
+  void sum.offsetWidth;
+  sum.classList.add('entering');
+
+  const price = calcPrice();
+  const dims = calcDimensions();
+  const colorObj = COLORS.find(c => c.id === selectedColor);
+
+  // Preview
+  const preview = document.getElementById('configPreview');
+  let previewHtml = `<div class="preview-swatch" style="background:${colorObj.hex};"></div>`;
+  previewHtml += `<div class="preview-text">`;
+  if (monitorCount === 1) {
+    previewHtml += `<strong>${SIZES[sizeLeft].label}</strong> · ${colorObj.name}`;
+  } else {
+    previewHtml += `<strong>${SIZES[sizeLeft].label} + ${SIZES[sizeRight].label}</strong> · ${colorObj.name}`;
+  }
+  previewHtml += `</div>`;
+  preview.innerHTML = previewHtml;
+
+  // Rows
+  const rows = document.getElementById('summaryRows');
+  let rHtml = '';
+  rHtml += `<div class="summary-row"><span>Precio base (${monitorCount === 1 ? '1 monitor' : '2 monitores'})</span><span>$${BASE[monitorCount]}</span></div>`;
+  if (monitorCount === 1 && SIZES[sizeLeft].adj > 0) {
+    rHtml += `<div class="summary-row"><span>Ajuste tamaño ${SIZES[sizeLeft].label}</span><span>+$${SIZES[sizeLeft].adj}</span></div>`;
+  }
+  if (monitorCount === 2) {
+    if (SIZES[sizeLeft].adj > 0) rHtml += `<div class="summary-row"><span>Monitor izq. ${SIZES[sizeLeft].label}</span><span>+$${SIZES[sizeLeft].adj}</span></div>`;
+    if (SIZES[sizeRight].adj > 0) rHtml += `<div class="summary-row"><span>Monitor der. ${SIZES[sizeRight].label}</span><span>+$${SIZES[sizeRight].adj}</span></div>`;
+  }
+  if (colorObj.adj > 0) {
+    rHtml += `<div class="summary-row"><span>Acabado ${colorObj.name}</span><span>+$${colorObj.adj}</span></div>`;
+  }
+  rHtml += `<div class="summary-row total"><span>Total</span><span id="totalPrice">$${price}</span></div>`;
+  rows.innerHTML = rHtml;
+
+  // Dimensions
+  document.getElementById('summaryDims').innerHTML = `
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+    Medidas aproximadas del mueble: <strong>${dims.w} × ${dims.h} cm</strong>
+  `;
+
+  // Buy button
+  const btn = document.getElementById('buyBtn');
+  btn.textContent = `Comprar Ahora — $${price}`;
+
+  // Price pulse
+  const tp = document.getElementById('totalPrice');
+  tp.classList.remove('price-pulse');
+  void tp.offsetWidth;
+  tp.classList.add('price-pulse');
+
+  setTimeout(() => sum.scrollIntoView({behavior:'smooth',block:'center'}), 100);
+}
+
+// ── CHECKOUT ──
+
+function handleCheckout() {
+  const price = calcPrice();
+  const colorObj = COLORS.find(c => c.id === selectedColor);
+  let label = 'ALITOSHI · ';
+  if (monitorCount === 1) label += `${SIZES[sizeLeft].label}`;
+  else label += `${SIZES[sizeLeft].label} + ${SIZES[sizeRight].label}`;
+  label += ` · ${colorObj.name}`;
+
+  document.getElementById('chkConfigLabel').textContent = label;
+  document.getElementById('chkPrice').textContent = '$' + price;
+  document.getElementById('chkPayBtn').textContent = 'Pagar $' + price;
+  document.getElementById('checkoutModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeCheckout() {
+  document.getElementById('checkoutModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function simulatePayment() {
+  closeCheckout();
+  const orderId = 'ALI-2026-' + String(Math.floor(Math.random()*90000)+10000).padStart(5,'0');
+  document.getElementById('generatedOrderId').textContent = orderId;
+  const colorObj = COLORS.find(c => c.id === selectedColor);
+  let configStr = monitorCount === 1
+    ? `1 monitor ${SIZES[sizeLeft].label}`
+    : `2 monitores (${SIZES[sizeLeft].label} + ${SIZES[sizeRight].label})`;
+  configStr += ` · ${colorObj.name} · $${calcPrice()}`;
+  document.getElementById('generatedConfig').textContent = configStr;
+  document.getElementById('successModal').classList.add('open');
+}
+function closeSuccess() {
+  document.getElementById('successModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// Close modals on backdrop
+document.getElementById('checkoutModal').addEventListener('click', e => { if(e.target===e.currentTarget) closeCheckout(); });
+document.getElementById('successModal').addEventListener('click', e => { if(e.target===e.currentTarget) closeSuccess(); });
+
+// ── NAVBAR ──
+window.addEventListener('scroll', () => {
+  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 20);
+});
+
+// ── MOBILE MENU ──
+const hamburger = document.getElementById('hamburgerBtn');
+const mobileMenu = document.getElementById('mobileMenu');
+hamburger.addEventListener('click', () => {
+  hamburger.classList.toggle('active');
+  mobileMenu.classList.toggle('open');
+  document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
+});
+function closeMobile() {
+  hamburger.classList.remove('active');
+  mobileMenu.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ── SCROLL REVEAL ──
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold:.15 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// ── FAQ ──
+function toggleFaq(btn) { btn.parentElement.classList.toggle('open'); }
+
+// ── ORDER TRACKING ──
+const stateIndex = { confirmado:0, produccion:1, enviado:2, entregado:3 };
+const stateColors = ['green','amber','blue','green-dark'];
+
+function trackOrder() {
+  const input = document.getElementById('orderInput').value.trim().toUpperCase();
+  const resultEl = document.getElementById('trackingResult');
+  const errorEl = document.getElementById('trackingError');
+  resultEl.classList.remove('show'); errorEl.classList.remove('show');
+  if (!input) return;
+  const order = orders[input];
+  if (!order) { errorEl.classList.add('show'); return; }
+
+  document.getElementById('orderId').textContent = 'Orden ' + input;
+  document.getElementById('orderName').textContent = order.nombre;
+  document.getElementById('orderDate').textContent = 'Compra: ' + formatDate(order.fecha);
+  document.getElementById('orderCity').textContent = order.ciudad;
+  document.getElementById('orderEta').textContent = formatDate(order.fechaEstimada);
+
+  const idx = stateIndex[order.estado];
+  for (let i = 0; i < 4; i++) {
+    const dot = document.getElementById('dot'+i);
+    const lbl = document.getElementById('label'+i);
+    dot.className = 'progress-dot';
+    lbl.className = 'progress-label';
+    if (i <= idx) { dot.classList.add('active',stateColors[i]); lbl.classList.add('active'); }
+  }
+  document.getElementById('progressFill').style.width = ['0%','33%','66%','100%'][idx];
+  resultEl.classList.add('show');
+}
+document.getElementById('orderInput').addEventListener('keydown', e => { if(e.key==='Enter') trackOrder(); });
+
+function formatDate(d) {
+  const m = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+  const p = d.split('-');
+  return parseInt(p[2])+' '+m[parseInt(p[1])-1]+' '+p[0];
+}
+
+// ═══════════════════════════════════════
+// ── ANIMATED PRODUCT "VIDEOS" (Canvas) ──
+// ═══════════════════════════════════════
+
+function easeInOutCubic(t) { return t < .5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2; }
+
+// ── Shared drawing utils ──
+function drawRoom(ctx, W, H, opts) {
+  const { wallColor, floorColor, floorY, shadowAlpha } = opts;
+  // Wall
+  ctx.fillStyle = wallColor;
+  ctx.fillRect(0, 0, W, floorY);
+  // Floor
+  ctx.fillStyle = floorColor;
+  ctx.fillRect(0, floorY, W, H - floorY);
+  // Floor line
+  ctx.strokeStyle = 'rgba(0,0,0,0.06)';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(0, floorY); ctx.lineTo(W, floorY); ctx.stroke();
+}
+
+function drawWallFrame(ctx, x, y, w, h) {
+  // Decorative frame on wall
+  ctx.strokeStyle = 'rgba(0,0,0,0.08)';
+  ctx.lineWidth = 1.5;
+  const r = 4;
+  ctx.beginPath();
+  ctx.roundRect(x, y, w, h, r);
+  ctx.stroke();
+  // Inner line art
+  ctx.strokeStyle = 'rgba(0,0,0,0.04)';
+  ctx.beginPath();
+  ctx.moveTo(x + w*0.2, y + h*0.3);
+  ctx.lineTo(x + w*0.8, y + h*0.3);
+  ctx.moveTo(x + w*0.3, y + h*0.5);
+  ctx.lineTo(x + w*0.7, y + h*0.5);
+  ctx.moveTo(x + w*0.25, y + h*0.7);
+  ctx.lineTo(x + w*0.75, y + h*0.7);
+  ctx.stroke();
+}
+
+function drawPlant(ctx, x, y, scale) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(scale, scale);
+  // Pot
+  ctx.fillStyle = '#C8B8A0';
+  ctx.beginPath();
+  ctx.moveTo(-12, 0); ctx.lineTo(-9, 28); ctx.lineTo(9, 28); ctx.lineTo(12, 0);
+  ctx.closePath(); ctx.fill();
+  ctx.fillStyle = '#B8A890';
+  ctx.fillRect(-12, 0, 24, 4);
+  // Leaves
+  ctx.fillStyle = '#7A9A6D';
+  for (let a of [-40, -15, 10, 35]) {
+    ctx.save();
+    ctx.rotate(a * Math.PI/180);
+    ctx.beginPath();
+    ctx.ellipse(0, -24, 6, 18, 0, 0, Math.PI*2);
+    ctx.fill();
+    ctx.restore();
+  }
+  ctx.fillStyle = '#8FB07E';
+  for (let a of [-28, 0, 22]) {
+    ctx.save();
+    ctx.rotate(a * Math.PI/180);
+    ctx.beginPath();
+    ctx.ellipse(0, -30, 5, 14, 0, 0, Math.PI*2);
+    ctx.fill();
+    ctx.restore();
+  }
+  ctx.restore();
+}
+
+function drawChair(ctx, x, y, scale) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(scale, scale);
+  // Legs
+  ctx.strokeStyle = '#2A2A2A';
+  ctx.lineWidth = 3;
+  ctx.lineCap = 'round';
+  // Back legs
+  ctx.beginPath(); ctx.moveTo(-14, 0); ctx.lineTo(-16, 40); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(14, 0); ctx.lineTo(16, 40); ctx.stroke();
+  // Front legs
+  ctx.beginPath(); ctx.moveTo(-14, 18); ctx.lineTo(-18, 40); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(14, 18); ctx.lineTo(18, 40); ctx.stroke();
+  // Seat
+  ctx.fillStyle = '#1A1A1A';
+  ctx.beginPath();
+  ctx.roundRect(-16, 14, 32, 6, 2);
+  ctx.fill();
+  // Backrest
+  ctx.fillStyle = '#1A1A1A';
+  ctx.beginPath();
+  ctx.roundRect(-13, -6, 26, 22, [4,4,0,0]);
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawDesk(ctx, wallX, wallY, deskW, deskH, angle, color, legLen) {
+  // angle: 0 = closed (flat against wall), 90 = fully open (horizontal)
+  const rad = angle * Math.PI / 180;
+  const hingeX = wallX;
+  const hingeY = wallY + deskH;
+
+  ctx.save();
+  ctx.translate(hingeX, hingeY);
+
+  // Shadow on floor when open
+  if (angle > 10) {
+    const shadowSpread = deskW * Math.cos(Math.PI/2 - rad) * 0.9;
+    const shadowY = legLen * (angle / 90);
+    ctx.fillStyle = `rgba(0,0,0,${0.06 * (angle/90)})`;
+    ctx.beginPath();
+    ctx.ellipse(deskW/2, shadowY + 6, shadowSpread/2 + 10, 6, 0, 0, Math.PI*2);
+    ctx.fill();
+  }
+
+  // Leg (support strut) — only visible when opening
+  if (angle > 5) {
+    const legAngle = Math.max(0, angle - 5);
+    const legRad = legAngle * Math.PI / 180;
+    const deskEndX = deskW * Math.sin(rad);
+    const deskEndY = deskW * Math.cos(rad) * -1 + deskW;
+    const actualLeg = legLen * (angle / 90);
+    ctx.strokeStyle = '#999';
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(deskEndX * 0.85, -deskW * Math.cos(rad) + deskW * 0.85);
+    ctx.lineTo(deskEndX * 0.85, -deskW * Math.cos(rad) + deskW * 0.85 + actualLeg);
+    ctx.stroke();
+    // Small foot
+    ctx.fillStyle = '#999';
+    ctx.beginPath();
+    ctx.arc(deskEndX * 0.85, -deskW * Math.cos(rad) + deskW * 0.85 + actualLeg, 3, 0, Math.PI*2);
+    ctx.fill();
+  }
+
+  // Desk surface (rotates from hinge)
+  ctx.rotate(Math.PI/2 - rad);
+  // Thickness (side)
+  ctx.fillStyle = darken(color, 15);
+  ctx.fillRect(0, 0, deskW, 5);
+  // Top surface
+  ctx.fillStyle = color;
+  ctx.fillRect(0, -deskH, deskW, deskH);
+  // Subtle edge highlight
+  ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+  ctx.lineWidth = 1;
+  ctx.strokeRect(0, -deskH, deskW, deskH);
+  // Subtle grain lines
+  ctx.strokeStyle = 'rgba(0,0,0,0.03)';
+  ctx.lineWidth = 0.5;
+  for (let i = 1; i < 6; i++) {
+    ctx.beginPath();
+    ctx.moveTo(deskW * 0.05, -deskH + (deskH/6)*i);
+    ctx.lineTo(deskW * 0.95, -deskH + (deskH/6)*i);
+    ctx.stroke();
+  }
+
+  ctx.restore();
+}
+
+function darken(hex, amt) {
+  let r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+  r = Math.max(0,r-amt); g = Math.max(0,g-amt); b = Math.max(0,b-amt);
+  return `rgb(${r},${g},${b})`;
+}
+
+// ── HERO CANVAS: Room scene with desk folding ──
+(function initHeroCanvas() {
+  const canvas = document.getElementById('heroCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+
+  function resize() {
+    const rect = canvas.parentElement.getBoundingClientRect();
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const CYCLE = 6000; // ms for full open-pause-close-pause
+  let start = performance.now();
+
+  function draw(now) {
+    const W = canvas.width / dpr;
+    const H = canvas.height / dpr;
+    const floorY = H * 0.72;
+    ctx.clearRect(0, 0, W, H);
+
+    // Room
+    drawRoom(ctx, W, H, {
+      wallColor: '#F5F3EE', floorColor: '#E8E4DC', floorY, shadowAlpha: 0.05
+    });
+
+    // Wall details
+    drawWallFrame(ctx, W*0.06, H*0.08, W*0.18, H*0.28);
+
+    // Plant
+    drawPlant(ctx, W*0.88, floorY - 2, Math.min(1, W/500));
+
+    // Desk animation
+    const elapsed = (now - start) % CYCLE;
+    let angle;
+    if (elapsed < 1200) {
+      // Opening
+      angle = easeInOutCubic(elapsed / 1200) * 90;
+    } else if (elapsed < 3200) {
+      // Open (pause)
+      angle = 90;
+    } else if (elapsed < 4400) {
+      // Closing
+      angle = 90 - easeInOutCubic((elapsed - 3200) / 1200) * 90;
+    } else {
+      // Closed (pause)
+      angle = 0;
+    }
+
+    const deskW = W * 0.38;
+    const deskH = H * 0.35;
+    const wallX = W * 0.30;
+    const wallY = floorY - deskH - H*0.06;
+    const legLen = floorY - (wallY + deskH) - 4;
+
+    drawDesk(ctx, wallX, wallY, deskW, deskH, angle, '#1A1A1A', legLen);
+
+    // Chair (appears/fades with desk)
+    const chairAlpha = angle > 60 ? Math.min(1, (angle-60)/30) : 0;
+    if (chairAlpha > 0) {
+      ctx.globalAlpha = chairAlpha;
+      drawChair(ctx, wallX + deskW*0.55, floorY - 42 * Math.min(1, W/500), Math.min(1, W/500));
+      ctx.globalAlpha = 1;
+    }
+
+    // Items on desk when open
+    if (angle > 80) {
+      const itemAlpha = Math.min(1, (angle - 80)/10);
+      ctx.globalAlpha = itemAlpha;
+      const deskSurfaceY = wallY + deskH - 2;
+      const deskRight = wallX + deskW * Math.sin(angle * Math.PI/180);
+
+      // Laptop
+      const lx = wallX + deskW*0.25;
+      ctx.fillStyle = '#C0C0C0';
+      ctx.beginPath();
+      ctx.roundRect(lx, deskSurfaceY - 22, deskW*0.35, 2, 1);
+      ctx.fill();
+      ctx.fillStyle = '#333';
+      ctx.beginPath();
+      ctx.roundRect(lx + 2, deskSurfaceY - 42, deskW*0.31, 20, 2);
+      ctx.fill();
+      ctx.fillStyle = '#555';
+      ctx.fillRect(lx + 5, deskSurfaceY - 39, deskW*0.25, 14);
+
+      // Coffee cup
+      ctx.fillStyle = '#F5F0E8';
+      ctx.beginPath();
+      ctx.arc(wallX + deskW*0.78, deskSurfaceY - 10, 8, 0, Math.PI*2);
+      ctx.fill();
+      ctx.strokeStyle = '#D5D0C8';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      ctx.globalAlpha = 1;
+    }
+
+    // Wall-mount bracket hint when closed
+    if (angle < 10) {
+      const bracketAlpha = 1 - angle/10;
+      ctx.globalAlpha = bracketAlpha * 0.15;
+      ctx.fillStyle = '#888';
+      ctx.fillRect(wallX + deskH*0.2, wallY - 3, deskH*0.15, 3);
+      ctx.fillRect(wallX + deskH*0.65, wallY - 3, deskH*0.15, 3);
+      ctx.globalAlpha = 1;
+    }
+
+    // Caption
+    ctx.fillStyle = 'rgba(0,0,0,0.35)';
+    ctx.font = `500 ${Math.max(11, W*0.024)}px Inter, sans-serif`;
+    ctx.textAlign = 'center';
+    const caption = angle > 45 ? 'Escritorio funcional' : 'Decoración de pared';
+    ctx.fillText(caption, W/2, H - 14);
+
+    requestAnimationFrame(draw);
+  }
+  requestAnimationFrame(draw);
+})();
+
+// ── SOLUTION CANVAS: Detailed open/close with measurements ──
+(function initSolutionCanvas() {
+  const canvas = document.getElementById('solutionCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+
+  function resize() {
+    const rect = canvas.parentElement.getBoundingClientRect();
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const CYCLE = 8000;
+  let start = performance.now();
+
+  function drawDimLine(ctx, x1, y1, x2, y2, label, side) {
+    ctx.strokeStyle = 'rgba(0,0,0,0.25)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4,3]);
+    ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+    ctx.setLineDash([]);
+    // End ticks
+    const horiz = Math.abs(y1-y2) < 2;
+    if (horiz) {
+      ctx.beginPath(); ctx.moveTo(x1,y1-4); ctx.lineTo(x1,y1+4); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(x2,y2-4); ctx.lineTo(x2,y2+4); ctx.stroke();
+    } else {
+      ctx.beginPath(); ctx.moveTo(x1-4,y1); ctx.lineTo(x1+4,y1); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(x2-4,y2); ctx.lineTo(x2+4,y2); ctx.stroke();
+    }
+    // Label
+    ctx.fillStyle = 'rgba(0,0,0,0.4)';
+    ctx.font = `600 ${Math.max(10,11)}px Inter, sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    const mx = (x1+x2)/2, my = (y1+y2)/2;
+    if (horiz) ctx.fillText(label, mx, my + (side === 'top' ? -12 : 12));
+    else ctx.fillText(label, mx + (side === 'left' ? -22 : 22), my);
+  }
+
+  function draw(now) {
+    const W = canvas.width / dpr;
+    const H = canvas.height / dpr;
+    const floorY = H * 0.75;
+    ctx.clearRect(0, 0, W, H);
+
+    // Room
+    drawRoom(ctx, W, H, {
+      wallColor: '#F5F3EE', floorColor: '#E8E4DC', floorY, shadowAlpha: 0.05
+    });
+
+    const elapsed = (now - start) % CYCLE;
+    let angle, phase;
+    if (elapsed < 1800) {
+      angle = easeInOutCubic(elapsed / 1800) * 90;
+      phase = 'opening';
+    } else if (elapsed < 4200) {
+      angle = 90;
+      phase = 'open';
+    } else if (elapsed < 6000) {
+      angle = 90 - easeInOutCubic((elapsed - 4200) / 1800) * 90;
+      phase = 'closing';
+    } else {
+      angle = 0;
+      phase = 'closed';
+    }
+
+    const deskW = W * 0.32;
+    const deskH = H * 0.38;
+    const wallX = W * 0.34;
+    const wallY = floorY - deskH - H*0.04;
+    const legLen = floorY - (wallY + deskH) - 4;
+
+    // Wall mount plate
+    ctx.fillStyle = 'rgba(0,0,0,0.04)';
+    ctx.fillRect(wallX - 4, wallY - 2, deskH + 8, deskH + 6);
+
+    drawDesk(ctx, wallX, wallY, deskW, deskH, angle, '#1A1A1A', legLen);
+
+    // Dimension lines when open
+    if (angle > 85) {
+      const dimAlpha = Math.min(1, (angle - 85) / 5);
+      ctx.globalAlpha = dimAlpha;
+      const surfaceY = wallY + deskH;
+      const deskEndX = wallX + deskW;
+      // Width
+      drawDimLine(ctx, wallX, surfaceY + 20, deskEndX, surfaceY + 20, '120 cm', 'top');
+      // Depth
+      drawDimLine(ctx, deskEndX + 16, wallY, deskEndX + 16, surfaceY, '60 cm', 'right');
+      ctx.globalAlpha = 1;
+    }
+
+    // Dimension lines when closed
+    if (angle < 5) {
+      const dimAlpha = Math.min(1, (5 - angle) / 5);
+      ctx.globalAlpha = dimAlpha;
+      // Height
+      drawDimLine(ctx, wallX - 16, wallY, wallX - 16, wallY + deskH, '75 cm', 'left');
+      // Width (thickness)
+      drawDimLine(ctx, wallX, wallY + deskH + 16, wallX + 8, wallY + deskH + 16, '15 cm', 'top');
+      ctx.globalAlpha = 1;
+    }
+
+    // Phase labels
+    ctx.textAlign = 'center';
+    const labels = {
+      opening: { text: 'Se despliega en 5 segundos', icon: '↓' },
+      open: { text: '120 × 60 cm de superficie útil', icon: '✓' },
+      closing: { text: 'Se pliega con un solo movimiento', icon: '↑' },
+      closed: { text: 'Solo 15 cm de profundidad cerrado', icon: '—' },
+    };
+    const lb = labels[phase];
+
+    // Badge
+    const badgeW = Math.min(320, W * 0.55);
+    const badgeH = 34;
+    const badgeX = W/2 - badgeW/2;
+    const badgeY = H * 0.06;
+    ctx.fillStyle = 'rgba(26,26,26,0.85)';
+    ctx.beginPath();
+    ctx.roundRect(badgeX, badgeY, badgeW, badgeH, 17);
+    ctx.fill();
+    ctx.fillStyle = '#fff';
+    ctx.font = `600 ${Math.max(12, W*0.022)}px Inter, sans-serif`;
+    ctx.textBaseline = 'middle';
+    ctx.fillText(lb.text, W/2, badgeY + badgeH/2);
+
+    // Timer ring bottom right
+    const ringX = W - 36;
+    const ringY = H - 30;
+    const ringR = 14;
+    const progress = elapsed / CYCLE;
+    ctx.strokeStyle = 'rgba(0,0,0,0.08)';
+    ctx.lineWidth = 2.5;
+    ctx.beginPath(); ctx.arc(ringX, ringY, ringR, 0, Math.PI*2); ctx.stroke();
+    ctx.strokeStyle = 'rgba(0,0,0,0.3)';
+    ctx.beginPath(); ctx.arc(ringX, ringY, ringR, -Math.PI/2, -Math.PI/2 + progress*Math.PI*2); ctx.stroke();
+    ctx.fillStyle = 'rgba(0,0,0,0.3)';
+    ctx.font = `600 9px Inter, sans-serif`;
+    ctx.textBaseline = 'middle';
+    ctx.fillText(`${Math.ceil((CYCLE - elapsed)/1000)}s`, ringX, ringY);
+
+    // 5s badge
+    ctx.fillStyle = 'rgba(0,0,0,0.15)';
+    ctx.font = `500 ${Math.max(10, W*0.02)}px Inter, sans-serif`;
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('ALITOSHI', W/2, H - 10);
+
+    requestAnimationFrame(draw);
+  }
+  requestAnimationFrame(draw);
+})();
+</script>
+</body>
+</html>
