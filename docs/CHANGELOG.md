@@ -189,3 +189,26 @@ Todas las versiones notables de este proyecto están documentadas aquí.
   - Shadow del panel en la pared
 
 - **Captions mejorados:** nuevo caption "Los monitores se encienden..." durante fase de boot
+
+---
+
+## [v8.0.0] — 2026-09-18
+
+### Agregado
+- **Persona animada en el hero** con narrativa completa:
+  - Personaje estilizado con piel, cabello, ropa casual y zapatos
+  - Expresiones faciales: ojos con brillo, sonrisa progresiva, rubor en mejillas
+  - Fase 1 (0-0.5s): Persona camina desde la derecha hacia el escritorio
+  - Fase 2 (0.5-2.5s): Se detiene junto al escritorio, mira hacia arriba mientras se abre, sonríe más
+  - Fase 3 (2.5-3.5s): Se sienta (transición fluida de pie a sentado)
+  - Fase 4 (3.5-6.5s): Trabaja feliz — brazos al frente tecleando, cabeza oscila suavemente, sonrisa plena
+  - Fase 5 (6.5-8.5s): Se levanta, camina hacia la derecha sonriendo, mira atrás
+  - Fase 6 (8.5-10s): De pie a distancia, admira el escritorio cerrado con satisfacción
+  - Animación de piernas al caminar (swing con fase)
+  - Brazos que se balancean al caminar y se levantan al teclear
+  - Escala responsiva que se adapta al viewport
+  - Posición sincronizada con la altura del escritorio desplegado
+
+### Cambiado
+- Captions actualizados: "Trabaja cómodo · todo al alcance" durante fase de trabajo
+- Caption final: "Tu espacio, siempre listo cuando lo necesites"
