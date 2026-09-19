@@ -212,3 +212,29 @@ Todas las versiones notables de este proyecto están documentadas aquí.
 ### Cambiado
 - Captions actualizados: "Trabaja cómodo · todo al alcance" durante fase de trabajo
 - Caption final: "Tu espacio, siempre listo cuando lo necesites"
+
+---
+
+## [v9.0.0] — 2026-09-19
+
+### Eliminado
+- Workflow de GitHub Actions para FTP (causaba fallos constantes por puerto/protocolo incompatible)
+- El hosting real es GitHub Pages con dominio personalizado `web.bursatil.ec` vía CNAME + DNS
+
+### Agregado
+- **Paleta de acento cálida** coherente con la madera nogal del producto:
+  - Terracota (#C05A3A), dorado (#D4A054), salvia (#7A9A6D), crema (#F5EDE4)
+- Gradiente radial sutil de fondo en el hero (terracota + dorado)
+- Palabra "Transformado" del título con gradiente de texto terracota→dorado
+- Iconos del Trust Bar con círculos de color de fondo (terracota, dorado, salvia, azul)
+- Iconos de las tarjetas de diseño con fondos degradados a color
+- Avatares con iniciales y gradiente de color en tarjetas de testimonios
+- Barra de countdown promocional con gradiente terracota→dorado (antes negro sólido)
+- Precio final del configurador en terracota oscuro (antes negro)
+- Borde superior de acento terracota en la tarjeta de resumen del configurador
+- Estados "seleccionado" del configurador (tamaño, color) ahora con borde y sombra terracota en vez de negro/gris
+- Hover en tarjetas de diseño con elevación (translateY) además de sombra
+- Fondo del configurador con gradiente sutil surface→crema
+
+### Verificado
+- Animaciones Canvas del hero y solución revisadas — funcionando correctamente sin regresiones tras cambios de CSS
