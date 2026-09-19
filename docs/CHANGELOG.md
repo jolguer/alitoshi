@@ -238,3 +238,19 @@ Todas las versiones notables de este proyecto están documentadas aquí.
 
 ### Verificado
 - Animaciones Canvas del hero y solución revisadas — funcionando correctamente sin regresiones tras cambios de CSS
+
+---
+
+## [v13.0.0] — 2026-09-19
+
+### Corregido — Diseño fiel a fotos de referencia del producto real
+- **Mecanismo de pistones de gas** (no barra rígida): cilindro + vástago, con punto superior cerca de la parte alta trasera del gabinete y punto inferior cerca del borde frontal del tablero (antes conectaba a un punto intermedio, no correspondía a un pistón de gas real)
+- **Interior del gabinete rediseñado** para coincidir con referencias:
+  - Soporte VESA (cruz negra) + accesorio circular visibles antes de que aparezcan los monitores
+  - Rejillas de ventilación en la parte superior
+  - Repisa dividida en 2 compartimentos con muesca circular central (paso de cables)
+- **Tablero**: canto frontal oscuro (antes blanco), perforación circular para cables cerca del borde frontal
+- **Secuencia de cortes profesional**: reemplazadas las disolvencias confusas entre ángulos de cámara distintos por cortes duros (estándar de edición real: solo se funde el punto de loop, nunca un cambio de ángulo)
+- **Video de la sección "Solución"** regenerado con el mismo mecanismo corregido y líneas de dimensión recalculadas correctamente para la vista de perfil (antes la cota de 120cm aparecía mal posicionada)
+- Texto de la tarjeta "Ingeniería silenciosa" actualizado: "Pistones de gas" en vez de "Bisagras"
+- Verificado: cero referencias a marcas de terceros en todo el archivo
