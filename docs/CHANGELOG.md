@@ -254,3 +254,22 @@ Todas las versiones notables de este proyecto están documentadas aquí.
 - **Video de la sección "Solución"** regenerado con el mismo mecanismo corregido y líneas de dimensión recalculadas correctamente para la vista de perfil (antes la cota de 120cm aparecía mal posicionada)
 - Texto de la tarjeta "Ingeniería silenciosa" actualizado: "Pistones de gas" en vez de "Bisagras"
 - Verificado: cero referencias a marcas de terceros en todo el archivo
+
+---
+
+## [v14.0.0] — 2026-09-19
+
+### Cambiado — Video 3D fotorrealista (Blender/Eevee)
+- **Reemplazado el render 2D tipo "canvas" por un video 3D real** generado con Blender 4.0 (motor Eevee), con materiales físicos, madera con veta procedural, iluminación de 3 puntos y post-procesado AgX
+- **Construcción corregida según fotos de referencia:**
+  - Marco exterior tipo "caja sombra" (shadow box) construido con corte booleano — garantiza una pieza cohesiva sin costuras
+  - La tapa/tablero está **embutida bajo el marco**: en la posición cerrada se ve como un cuadro liso en la pared; al abrir, la tapa emerge desde detrás del listón inferior del marco (articulación oculta), exactamente como en las fotos de referencia
+  - Bisagra recesada, no visible desde el frente cuando está cerrado
+  - Pistones de gas simplificados pero correctamente anclados: parte superior trasera del marco → borde frontal del tablero
+  - Interior con soporte VESA, accesorio circular, rejillas de ventilación, repisa dividida en 2 compartimentos con muesca de cables
+  - Tablero con canto frontal y perforación para cables
+- Cámara con leve movimiento tipo "Ken Burns" a lo largo de la animación para sensación de video real
+- Secuencia: cerrado (como cuadro) → apertura con la tapa emergiendo del marco → monitores encienden → laptop aparece → pausa → cierre
+- 85 frames renderizados a 10fps base, interpolados a 30fps para movimiento fluido
+- Mismo video aplicado en las secciones Hero y Solución
+- Verificado: cero referencias a marcas de terceros
