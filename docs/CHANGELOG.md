@@ -273,3 +273,21 @@ Todas las versiones notables de este proyecto están documentadas aquí.
 - 85 frames renderizados a 10fps base, interpolados a 30fps para movimiento fluido
 - Mismo video aplicado en las secciones Hero y Solución
 - Verificado: cero referencias a marcas de terceros
+
+---
+
+## [v15.0.0] — 2026-09-19
+
+### Agregado
+- **Personaje humano 3D** integrado a la animación: camina hacia el escritorio, lo abre, trabaja junto a él, y se aleja al finalizar
+- Corregido bug de sincronización de jerarquías padre-hijo en Blender (depsgraph) reescribiendo el rig del personaje con cinemática directa en Python (sin parent/child de Blender), eliminando problemas de posicionamiento
+- Tono de piel, cabello oscuro y vestimenta ajustados
+- **Textos en español superpuestos** siguiendo la estructura narrativa de un video de referencia tipo testimonio:
+  - "Mi escritorio no ocupa espacio... porque no está a la vista"
+  - "Se despliega en segundos"
+  - "Dos monitores + laptop, listo para trabajar"
+  - "Y al cerrar... vuelve a ser parte de la pared"
+- Composición de cámara ajustada para mostrar persona y mueble sin que se tapen entre sí
+
+### Nota
+- No se generó una persona fotorrealista de video real (fuera del alcance de las herramientas disponibles); se optó por un personaje 3D estilizado renderizado en Blender/Eevee, manteniendo el enfoque fotorrealista en el mueble y el entorno
