@@ -335,26 +335,9 @@ footer a { color:var(--whatsapp);text-decoration:none; }
   .color-grid{grid-template-columns:repeat(3,1fr)}
   .monitor-pair{grid-template-columns:1fr}
   .config-preview{flex-wrap:wrap}
-  .promo-bar{font-size:12px}
-  .promo-bar .promo-timer{gap:4px}
 }
 @media(max-width:400px){
   .color-grid{grid-template-columns:repeat(2,1fr)}
-}
-
-/* ── Promo countdown bar ── */
-.promo-bar {
-  background:linear-gradient(90deg, var(--terracotta-dark), var(--terracotta), var(--gold));
-  color:var(--white);
-  text-align:center;padding:10px 24px;
-  font-size:13px;font-weight:600;letter-spacing:.02em;
-  display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;
-}
-.promo-timer { display:flex;align-items:center;gap:6px; }
-.promo-timer .time-block {
-  background:rgba(255,255,255,.15);padding:2px 8px;
-  border-radius:4px;font-variant-numeric:tabular-nums;
-  min-width:32px;text-align:center;
 }
 
 /* ── Loading screen ── */
@@ -399,8 +382,20 @@ footer a { color:var(--whatsapp);text-decoration:none; }
 .mobile-sticky-cta{display:none}
 @media (max-width:700px){.mobile-sticky-cta{position:fixed;display:flex;left:12px;right:12px;bottom:12px;z-index:120;align-items:center;justify-content:center;gap:8px;padding:14px 18px;border-radius:999px;background:var(--accent);color:#fff;text-decoration:none;font-size:14px;font-weight:700;box-shadow:0 8px 28px rgba(0,0,0,.18);transform:translateY(120%);transition:transform .25s ease}.mobile-sticky-cta.visible{transform:translateY(0)}body{padding-bottom:76px}}
 </style>
-</style>
-</head>
+<style>
+/* v16.1 UX refinements */
+.option-card,.color-card{font:inherit;color:inherit}
+.option-card{width:100%}
+.color-card{width:100%}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.14em;color:var(--text-secondary);margin-bottom:12px}
+.how-it-works{background:var(--surface)}
+.how-grid{max-width:1000px;margin:48px auto 0;display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.how-card{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:28px;position:relative}
+.how-number{display:block;font-size:12px;font-weight:800;letter-spacing:.12em;color:var(--terracotta);margin-bottom:30px}
+.how-card h3{font-size:20px;margin-bottom:8px}
+.how-card p{color:var(--text-secondary);line-height:1.6}
+@media(max-width:768px){.how-grid{grid-template-columns:1fr;gap:12px}.how-card{padding:22px}.color-grid{grid-template-columns:repeat(2,1fr)}}
+</style></head>
 <body>
 
 <!-- ════════ LOADING SCREEN ════════ -->
@@ -506,7 +501,7 @@ footer a { color:var(--whatsapp);text-decoration:none; }
       <div class="trust-icon-circle" style="background:rgba(37,99,235,0.1);">
       <svg viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
       </div>
-      <span>Envío 48–72h</span>
+      <span>Garantía de 1 año</span>
     </div>
   </div>
 </div>
@@ -530,6 +525,32 @@ footer a { color:var(--whatsapp);text-decoration:none; }
   <div class="solution-text reveal">
     <h2>Se abre. Trabajas. Se cierra.</h2>
     <p>De decoración a escritorio funcional en un movimiento.</p>
+  </div>
+</section>
+
+<!-- ════════ HOW IT WORKS ════════ -->
+<section class="section how-it-works" id="como-funciona">
+  <div class="section-narrow reveal">
+    <p class="eyebrow">CÓMO FUNCIONA</p>
+    <h2 class="section-title">Tres movimientos. Un espacio que cambia contigo.</h2>
+    <p class="section-subtitle">Abre cuando vas a trabajar. Ajusta tu espacio. Al terminar, vuelve a cerrar y deja la pared limpia.</p>
+  </div>
+  <div class="how-grid">
+    <article class="how-card reveal">
+      <span class="how-number">01</span>
+      <h3>Abre</h3>
+      <p>El tablero baja suavemente con su sistema de pistones de gas.</p>
+    </article>
+    <article class="how-card reveal">
+      <span class="how-number">02</span>
+      <h3>Trabaja</h3>
+      <p>Usa una superficie de 120 × 60 cm, pensada para tu configuración.</p>
+    </article>
+    <article class="how-card reveal">
+      <span class="how-number">03</span>
+      <h3>Cierra</h3>
+      <p>Cuando termines, vuelve a plegarlo y recupera el espacio visual de la habitación.</p>
+    </article>
   </div>
 </section>
 
@@ -558,8 +579,8 @@ footer a { color:var(--whatsapp);text-decoration:none; }
       <div class="design-icon-wrap" style="background:linear-gradient(135deg, rgba(37,99,235,0.1), rgba(192,90,58,0.06));">
       <svg viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
       </div>
-      <h3>Mecanismo probado</h3>
-      <p>Sistema de apertura suave con bloqueo vertical. Firme cuando lo usas, invisible cuando no.</p>
+      <h3>Pistones de gas</h3>
+      <p>Ayudan a controlar la apertura y el cierre del tablero para una transformación suave y práctica.</p>
     </div>
   </div>
 </section>
@@ -572,8 +593,8 @@ footer a { color:var(--whatsapp);text-decoration:none; }
       <p class="section-subtitle">Cada número, pensado.</p>
     </div>
     <div class="specs-table reveal">
-      <div class="spec-row"><span class="spec-label">Medidas abierto</span><span class="spec-value">Según configuración</span></div>
-      <div class="spec-row"><span class="spec-label">Medidas cerrado</span><span class="spec-value">Ancho × 15 × 75 cm</span></div>
+      <div class="spec-row"><span class="spec-label">Medidas abierto</span><span class="spec-value">120 × 60 cm</span></div>
+      <div class="spec-row"><span class="spec-label">Profundidad cerrado</span><span class="spec-value">15 cm</span></div>
       <div class="spec-row"><span class="spec-label">Peso</span><span class="spec-value">14–22 kg</span></div>
       <div class="spec-row"><span class="spec-label">Material</span><span class="spec-value">Tablero RH 18mm</span></div>
       <div class="spec-row"><span class="spec-label">Capacidad</span><span class="spec-value">50 kg distribuidos</span></div>
@@ -632,18 +653,18 @@ footer a { color:var(--whatsapp);text-decoration:none; }
       <h3 class="step-title">¿Cuántos monitores usarás?</h3>
       <p class="step-subtitle">Elige la configuración que se adapte a tu flujo de trabajo.</p>
       <div class="option-grid-2">
-        <div class="option-card" tabindex="0" role="button" aria-pressed="false" onclick="selectMonitorCount(1)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectMonitorCount(1)}" id="mc1">
+        <button type="button" class="option-card" aria-pressed="false" onclick="selectMonitorCount(1)" id="mc1">
           <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
           <p class="card-title">Un Monitor</p>
           <p class="card-desc">Configuración compacta para trabajo enfocado.</p>
           <p class="card-price">Desde $199</p>
-        </div>
-        <div class="option-card" tabindex="0" role="button" aria-pressed="false" onclick="selectMonitorCount(2)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectMonitorCount(2)}" id="mc2">
+        </button>
+        <button type="button" class="option-card" aria-pressed="false" onclick="selectMonitorCount(2)" id="mc2">
           <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="14" height="10" rx="1.5"/><rect x="9" y="4" width="14" height="10" rx="1.5"/><line x1="6" y1="18" x2="12" y2="18"/><line x1="8" y1="14" x2="8" y2="18"/><line x1="14" y1="18" x2="20" y2="18"/><line x1="17" y1="14" x2="17" y2="18"/></svg>
           <p class="card-title">Dos Monitores</p>
           <p class="card-desc">Máxima productividad para multitarea.</p>
           <p class="card-price">Desde $249</p>
-        </div>
+        </button>
       </div>
     </div>
 
@@ -696,7 +717,7 @@ footer a { color:var(--whatsapp);text-decoration:none; }
         <div class="summary-dims" id="summaryDims"></div>
         <div style="margin-top:28px;">
           <button class="btn-primary" id="buyBtn" style="width:100%;justify-content:center;padding:16px 32px;font-size:16px;" onclick="handleCheckout()">Comprar Ahora — $199</button>
-          <div class="buy-microcopy">Envío gratis · Garantía de 1 año · Pago seguro</div>
+          <div class="buy-microcopy">Garantía de 1 año · Consulta opciones de entrega</div>
           <div class="payment-icons">
             <span>VISA</span><span>Mastercard</span><span>Diners</span>
           </div>
@@ -904,10 +925,9 @@ function buildSizeCards(containerId, onSelect, stateGetter) {
   el.innerHTML = '';
   sizeKeys.forEach(k => {
     const s = SIZES[k];
-    const card = document.createElement('div');
+    const card = document.createElement('button');
+    card.type = 'button';
     card.className = 'option-card';
-    card.tabIndex = 0;
-    card.setAttribute('role','button');
     card.setAttribute('aria-pressed','false');
     card.setAttribute('data-size', k);
     card.innerHTML = `
@@ -917,7 +937,6 @@ function buildSizeCards(containerId, onSelect, stateGetter) {
       <p class="card-price">${s.adj === 0 ? 'Incluido' : '+$' + s.adj}</p>
     `;
     card.onclick = () => onSelect(k, containerId);
-    card.onkeydown = (e) => { if(e.key==='Enter'||e.key===' '){e.preventDefault();onSelect(k,containerId);} };
     el.appendChild(card);
   });
 }
@@ -926,10 +945,9 @@ function buildColorGrid() {
   const el = document.getElementById('colorGrid');
   el.innerHTML = '';
   COLORS.forEach(c => {
-    const card = document.createElement('div');
+    const card = document.createElement('button');
+    card.type = 'button';
     card.className = 'color-card';
-    card.tabIndex = 0;
-    card.setAttribute('role','button');
     card.setAttribute('aria-pressed','false');
     card.setAttribute('data-color', c.id);
     const border = c.id === 'blanco' ? '#D5D5D0' : c.hex;
@@ -939,7 +957,6 @@ function buildColorGrid() {
       <p class="card-price">${c.adj === 0 ? 'Incluido' : '+$' + c.adj}</p>
     `;
     card.onclick = () => selectColor(c.id);
-    card.onkeydown = (e) => { if(e.key==='Enter'||e.key===' '){e.preventDefault();selectColor(c.id);} };
     el.appendChild(card);
   });
 }
