@@ -4,6 +4,20 @@ Todas las versiones notables de este proyecto están documentadas aquí.
 
 ---
 
+## [v16.3.1] — 2026-09-25
+
+### Corrección comercial y técnica
+- Corregido el rango estructurado de precios del producto: máximo **$535**, consistente con 2 monitores ($450) + ajuste máximo de tamaño ($70) + acabado máximo ($15).
+- Corregido el resumen del configurador dual para mostrar un único ajuste por tamaño, calculado sobre el monitor de mayor tamaño, en concordancia con la función real de cálculo.
+- Eliminada la inconsistencia que mostraba recargos de ambos monitores aunque el total solo aplicaba el mayor.
+- Verificado que la configuración dual mantiene tablero de **25 mm (2,5 cm)**.
+
+### Verificado
+- Sin referencias a marcas competidoras.
+- Precio 1 monitor: desde $199.
+- Precio 2 monitores: desde $450.
+- Mecanismo: pistones de gas.
+
 ## [v16.3.0] — 2026-09-25
 
 ### Estrategia comercial y precios
