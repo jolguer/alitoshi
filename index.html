@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ALITOSHI — Escritorios Plegables de Pared | Hecho en Ecuador</title>
-<meta name="description" content="Escritorios plegables de pared que se transforman en decoración. Diseñados para espacios pequeños. Desde $199. Envío gratis a todo Ecuador.">
+<meta name="description" content="Escritorios plegables de pared que se transforman en decoración. Diseñados para espacios pequeños. Desde $199. Garantía de 1 año.">
 <meta name="keywords" content="escritorio plegable, mueble de pared, escritorio abatible, muebles Ecuador, home office, ahorro espacio">
 <meta name="author" content="ALITOSHI">
 <meta name="robots" content="index, follow">
@@ -28,6 +28,9 @@
 
 <!-- Theme color -->
 <meta name="theme-color" content="#FAFAF7">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Product","name":"ALITOSHI Escritorio Plegable de Pared","brand":{"@type":"Brand","name":"ALITOSHI"},"description":"Escritorio plegable de pared que se transforma en un espacio de trabajo y vuelve a integrarse visualmente con la pared.","url":"https://web.bursatil.ec","offers":{"@type":"AggregateOffer","priceCurrency":"USD","lowPrice":"199","highPrice":"389","offerCount":"8","availability":"https://schema.org/InStock"}}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -388,6 +391,14 @@ footer a { color:var(--whatsapp);text-decoration:none; }
 .live-dot { width:8px;height:8px;border-radius:50%;background:var(--green);
   animation:livePulse 2s ease infinite; }
 @keyframes livePulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.8)} }
+<style>
+.hero-eyebrow{font-size:12px;font-weight:700;letter-spacing:.14em;color:var(--text-secondary);margin-bottom:16px}
+.hero-price{font-size:24px;font-weight:700;letter-spacing:-.02em;margin:-8px 0 20px}
+@media (max-width:700px){.hero-eyebrow{font-size:11px}.hero-price{font-size:22px}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}.reveal{opacity:1!important;transform:none!important}}
+.mobile-sticky-cta{display:none}
+@media (max-width:700px){.mobile-sticky-cta{position:fixed;display:flex;left:12px;right:12px;bottom:12px;z-index:120;align-items:center;justify-content:center;gap:8px;padding:14px 18px;border-radius:999px;background:var(--accent);color:#fff;text-decoration:none;font-size:14px;font-weight:700;box-shadow:0 8px 28px rgba(0,0,0,.18);transform:translateY(120%);transition:transform .25s ease}.mobile-sticky-cta.visible{transform:translateY(0)}body{padding-bottom:76px}}
+</style>
 </style>
 </head>
 <body>
@@ -423,18 +434,6 @@ footer a { color:var(--whatsapp);text-decoration:none; }
 })();
 </script>
 
-<!-- ════════ PROMO COUNTDOWN BAR ════════ -->
-<div class="promo-bar" id="promoBar">
-  <span>Precio de lanzamiento termina en</span>
-  <div class="promo-timer">
-    <span class="time-block" id="promoDays">00</span>d
-    <span class="time-block" id="promoHours">00</span>h
-    <span class="time-block" id="promoMins">00</span>m
-    <span class="time-block" id="promoSecs">00</span>s
-  </div>
-  <span>— Ahorra $50+</span>
-</div>
-
 <!-- ════════ NAVBAR ════════ -->
 <nav class="navbar" id="navbar">
   <div class="navbar-inner">
@@ -443,7 +442,6 @@ footer a { color:var(--whatsapp);text-decoration:none; }
       <a href="#mueble">El Mueble</a>
       <a href="#diseno">Diseño</a>
       <a href="#specs">Especificaciones</a>
-      <a href="#tracking">Rastrear Pedido</a>
       <a href="#faq">FAQ</a>
       <a href="#comprar" class="btn-primary">Configurar y Comprar</a>
     </div>
@@ -454,7 +452,6 @@ footer a { color:var(--whatsapp);text-decoration:none; }
   <a href="#mueble" onclick="closeMobile()">El Mueble</a>
   <a href="#diseno" onclick="closeMobile()">Diseño</a>
   <a href="#specs" onclick="closeMobile()">Especificaciones</a>
-  <a href="#tracking" onclick="closeMobile()">Rastrear Pedido</a>
   <a href="#faq" onclick="closeMobile()">FAQ</a>
   <a href="#comprar" class="btn-primary" onclick="closeMobile()" style="text-align:center;margin-top:12px;">Configurar y Comprar</a>
 </div>
@@ -464,17 +461,15 @@ footer a { color:var(--whatsapp);text-decoration:none; }
 <section class="hero" id="hero">
   <div class="hero-grid">
     <div class="hero-content">
-      <h1 class="animate-fade-up">Tu espacio.<br><span class="hero-accent-word">Transformado.</span></h1>
-      <p class="subtitle animate-fade-up delay-2">Un mueble de pared que se pliega en segundos. Diseñado para quienes valoran cada centímetro.</p>
-      <a href="#comprar" class="btn-primary animate-fade-up delay-3" style="font-size:16px;padding:14px 32px;">Configura el Tuyo</a>
+      <div class="hero-eyebrow animate-fade-up">ESCRITORIO PLEGABLE DE PARED</div>
+      <h1 class="animate-fade-up delay-1">Tu escritorio cuando lo necesitas.<br><span class="hero-accent-word">Tu pared cuando no.</span></h1>
+      <p class="subtitle animate-fade-up delay-2">Un escritorio que se transforma en un cuadro limpio y discreto. Configúralo según tus monitores y tu espacio.</p>
+      <div class="hero-price animate-fade-up delay-3">Desde $199</div>
+      <a href="#comprar" class="btn-primary animate-fade-up delay-3" style="font-size:16px;padding:14px 32px;">Configurar mi ALITOSHI</a>
       <div class="microcopy animate-fade-up delay-4">
         <span>Envío a todo Ecuador</span><span>·</span>
         <span>Garantía de 1 año</span><span>·</span>
-        <span>Pago seguro</span>
-      </div>
-      <div class="live-counter animate-fade-up delay-4">
-        <span class="live-dot"></span>
-        <span id="liveCount">14 personas viendo esto ahora</span>
+        <span>Hasta 50 kg</span>
       </div>
     </div>
     <div class="video-placeholder animate-fade-up delay-3" style="background:#F0EFEB;">
@@ -797,6 +792,7 @@ footer a { color:var(--whatsapp);text-decoration:none; }
 </section>
 
 <!-- ════════ FOOTER ════════ -->
+<a href="#comprar" class="mobile-sticky-cta" id="mobileStickyCta" aria-label="Configurar mi ALITOSHI desde 199 dólares">Configurar mi ALITOSHI · Desde $199</a>
 <footer>
   <p class="logo-footer">ALITOSHI</p>
   <p>Muebles plegables de pared — Hecho en Ecuador</p>
@@ -1242,79 +1238,19 @@ function formatDate(d) {
 }
 
 
-// ══════════════════════════════════════
-// ── PROMO COUNTDOWN (7 days from now) ──
-// ══════════════════════════════════════
-(function() {
-  try {
-  const end = new Date();
-  end.setDate(end.getDate() + 7);
-  end.setHours(23,59,59,0);
 
-  function tick() {
-    const now = new Date();
-    let diff = Math.max(0, Math.floor((end - now) / 1000));
-    const d = Math.floor(diff / 86400); diff %= 86400;
-    const h = Math.floor(diff / 3600); diff %= 3600;
-    const m = Math.floor(diff / 60);
-    const s = diff % 60;
-    document.getElementById('promoDays').textContent = String(d).padStart(2,'0');
-    document.getElementById('promoHours').textContent = String(h).padStart(2,'0');
-    document.getElementById('promoMins').textContent = String(m).padStart(2,'0');
-    document.getElementById('promoSecs').textContent = String(s).padStart(2,'0');
-  }
-  tick();
-  setInterval(tick, 1000);
-  } catch(e) { console.error("ALITOSHI animation error:", e); }
-})();
-
-// ══════════════════════════════════════
-// ── NAVBAR OFFSET FOR PROMO BAR ──
-// ══════════════════════════════════════
-(function() {
+// Conversion and mobile UX
+(function(){
   try {
-  const navbar = document.getElementById('navbar');
-  const promo = document.getElementById('promoBar');
-  function updateOffset() {
-    const h = promo.offsetHeight;
-    navbar.style.top = h + 'px';
-  }
-  updateOffset();
-  window.addEventListener('resize', updateOffset);
-  // Adjust hero padding too
-  document.querySelector('.hero').style.paddingTop = (120 + promo.offsetHeight) + 'px';
-  // Mobile menu offset
-  const mm = document.getElementById('mobileMenu');
-  mm.style.top = (60 + promo.offsetHeight) + 'px';
-  } catch(e) { console.error("ALITOSHI animation error:", e); }
-})();
-
-// ══════════════════════════════════════
-// ── SCROLL TO TOP BUTTON ──
-// ══════════════════════════════════════
-(function() {
-  try {
-  const btn = document.getElementById('scrollTopBtn');
-  window.addEventListener('scroll', () => {
-    btn.classList.toggle('visible', window.scrollY > 600);
-  });
-  } catch(e) { console.error("ALITOSHI animation error:", e); }
-})();
-
-// ══════════════════════════════════════
-// ── LIVE VIEWER COUNTER (simulated) ──
-// ══════════════════════════════════════
-(function() {
-  try {
-  const el = document.getElementById('liveCount');
-  let count = Math.floor(Math.random() * 8) + 12; // 12-19
-  function update() {
-    const delta = Math.random() > 0.5 ? 1 : -1;
-    count = Math.max(8, Math.min(28, count + delta));
-    el.textContent = count + ' personas viendo esto ahora';
-  }
-  setInterval(update, 4000 + Math.random() * 3000);
-  } catch(e) { console.error("ALITOSHI animation error:", e); }
+    const sticky=document.getElementById('mobileStickyCta'), hero=document.getElementById('hero');
+    if(sticky&&hero){const update=()=>sticky.classList.toggle('visible',window.scrollY>hero.offsetHeight*.65);window.addEventListener('scroll',update,{passive:true});update();}
+    const track=(name,detail)=>{window.dataLayer=window.dataLayer||[];window.dataLayer.push(Object.assign({event:name},detail||{}));};
+    document.querySelectorAll('a[href="#comprar"]').forEach(el=>el.addEventListener('click',()=>track('cta_click',{label:el.textContent.trim()})));
+    document.querySelectorAll('.option-card').forEach(el=>el.addEventListener('click',()=>track('config_option_click',{label:el.textContent.trim()})));
+    document.querySelectorAll('.color-card').forEach(el=>el.addEventListener('click',()=>track('config_color_click',{label:el.textContent.trim()})));
+    document.querySelectorAll('.faq-question').forEach(el=>el.addEventListener('click',()=>track('faq_open',{label:el.textContent.trim()})));
+    document.querySelectorAll('.btn-whatsapp').forEach(el=>el.addEventListener('click',()=>track('whatsapp_click')));
+  } catch(e) { console.error('ALITOSHI UX error:',e); }
 })();
 </script>
 </body>
