@@ -29,7 +29,7 @@
 <!-- Theme color -->
 <meta name="theme-color" content="#FAFAF7">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"Product","name":"ALITOSHI Escritorio Plegable de Pared","brand":{"@type":"Brand","name":"ALITOSHI"},"description":"Escritorio plegable de pared que se transforma en un espacio de trabajo y vuelve a integrarse visualmente con la pared.","url":"https://web.bursatil.ec","offers":{"@type":"AggregateOffer","priceCurrency":"USD","lowPrice":"199","highPrice":"605","offerCount":"8","availability":"https://schema.org/InStock"}}
+{"@context":"https://schema.org","@type":"Product","name":"ALITOSHI Escritorio Plegable de Pared","brand":{"@type":"Brand","name":"ALITOSHI"},"description":"Escritorio plegable de pared que se transforma en un espacio de trabajo y vuelve a integrarse visualmente con la pared.","url":"https://web.bursatil.ec","offers":{"@type":"AggregateOffer","priceCurrency":"USD","lowPrice":"199","highPrice":"535","offerCount":"8","availability":"https://schema.org/InStock"}}
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1108,8 +1108,9 @@ function showSummary() {
     rHtml += `<div class="summary-row"><span>Ajuste tamaño ${SIZES[sizeLeft].label}</span><span>+$${SIZES[sizeLeft].adj}</span></div>`;
   }
   if (monitorCount === 2) {
-    if (SIZES[sizeLeft].adj > 0) rHtml += `<div class="summary-row"><span>Monitor izq. ${SIZES[sizeLeft].label}</span><span>+$${SIZES[sizeLeft].adj}</span></div>`;
-    if (SIZES[sizeRight].adj > 0) rHtml += `<div class="summary-row"><span>Monitor der. ${SIZES[sizeRight].label}</span><span>+$${SIZES[sizeRight].adj}</span></div>`;
+    const dualAdj = Math.max(SIZES[sizeLeft].adj, SIZES[sizeRight].adj);
+    const largerSize = SIZES[sizeLeft].adj >= SIZES[sizeRight].adj ? SIZES[sizeLeft].label : SIZES[sizeRight].label;
+    if (dualAdj > 0) rHtml += `<div class="summary-row"><span>Ajuste por tamaño mayor (${largerSize})</span><span>+${dualAdj}</span></div>`;
   }
   if (colorObj.adj > 0) {
     rHtml += `<div class="summary-row"><span>Acabado ${colorObj.name}</span><span>+$${colorObj.adj}</span></div>`;
@@ -1278,4 +1279,4 @@ function formatDate(d) {
 </script>
 </body>
 </html>
-<!-- deployed 2026-09-19T03:01:08Z -->
+<!-- commercial validation: v16.3.1 -->
