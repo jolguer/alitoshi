@@ -4,6 +4,28 @@ Todas las versiones notables de este proyecto están documentadas aquí.
 
 ---
 
+## [v16.3.0] — 2026-09-25
+
+### Estrategia comercial y precios
+- Confirmado precio de entrada de **$199** para configuración de 1 monitor con tablero de **18 mm**.
+- Confirmado precio base de **$450** para configuración de 2 monitores con tablero de **2,5 cm (25 mm)**.
+- En la configuración dual, el ajuste por tamaño se calcula una sola vez tomando el monitor de mayor tamaño, en lugar de sumar el recargo de ambos monitores.
+- Esto simplifica la oferta y reduce el salto de precio para configuraciones duales grandes.
+- Se añadió comunicación explícita de que el ajuste de tamaño dual se aplica según el monitor más grande.
+- Se mantiene el mecanismo de **pistones de gas**.
+
+### Referencia competitiva
+- La revisión de precios del mercado ecuatoriano muestra escritorios plegables básicos de pared alrededor de **$30–$180**, un modelo plegable con librero alrededor de **$152**, y modelos plegables de pared más equipados alrededor de **$274**; también aparecen escritorios eléctricos regulables alrededor de **$277–$409**. Estos productos no son equivalentes en configuración, dimensiones o funcionalidad, por lo que se utilizaron como referencias de mercado y no como comparación directa uno a uno.
+- La estrategia aplicada posiciona ALITOSHI mediante **valor funcional + diseño + configuración**, evitando competir únicamente por precio.
+
+### Verificado
+- Sin referencias a marcas competidoras.
+- Precio 1 monitor: $199.
+- Precio 2 monitores: $450.
+- Tablero 1 monitor: 18 mm.
+- Tablero 2 monitores: 25 mm.
+- HTML/CSS/JS estructuralmente balanceado.
+
 ## [v16.2.0] — 2026-09-25
 
 ### Precios y producto
