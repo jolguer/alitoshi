@@ -4,6 +4,19 @@ Todas las versiones notables de este proyecto están documentadas aquí.
 
 ---
 
+## [v16.1.0] — 2026-09-25
+
+### UX/UI y conversión
+- Añadida sección “Cómo funciona” para explicar visualmente el flujo abrir → trabajar → cerrar.
+- Reforzada la explicación del sistema de **pistones de gas**.
+- Actualizadas las especificaciones visibles a **120 × 60 cm abierto** y **15 cm de profundidad cerrado**.
+- Sustituida la afirmación de envío 48–72 h en la barra de confianza por **Garantía de 1 año**.
+- Eliminada la promesa de “Envío gratis” del resumen del configurador.
+- Convertidas las opciones del configurador y acabados de color en botones semánticos para mejorar accesibilidad y teclado.
+- Refinada la experiencia móvil del selector de colores a dos columnas.
+- Eliminados estilos residuales del countdown promocional.
+
+
 ## [v16.0.0] — 2026-09-25
 
 ### Cambiado
