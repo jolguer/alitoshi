@@ -4,6 +4,21 @@ Todas las versiones notables de este proyecto están documentadas aquí.
 
 ---
 
+## [v16.2.0] — 2026-09-25
+
+### Precios y producto
+- Actualizado el precio base de la configuración de **2 monitores a $450**.
+- La configuración de 2 monitores se identifica con **tablero de 3 cm** en el configurador y resumen.
+- Ajustado el rango de precio estructurado del producto hasta **$605**, considerando los tamaños y acabados disponibles.
+- Se mantiene el sistema de **pistones de gas** como mecanismo del producto.
+- Actualizada la descripción técnica del material para diferenciar **18 mm** en configuración estándar y **30 mm** para 2 monitores.
+
+### Verificado
+- HTML: etiquetas `style` y `script` balanceadas.
+- Sin referencias a marcas de terceros/competidores.
+- Precio base de 1 monitor se mantiene en **$199**.
+- El configurador calcula el precio dual a partir de **$450** más los ajustes correspondientes.
+
 ## [v16.1.1] — 2026-09-25
 
 ### Corrección
