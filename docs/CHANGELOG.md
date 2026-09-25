@@ -4,6 +4,12 @@ Todas las versiones notables de este proyecto están documentadas aquí.
 
 ---
 
+## [v16.1.1] — 2026-09-25
+
+### Corrección
+- Corregido el cierre del bloque de estilos para asegurar una estructura HTML/CSS válida después de las mejoras UX/UI de v16.1.0.
+
+
 ## [v16.1.0] — 2026-09-25
 
 ### UX/UI y conversión
