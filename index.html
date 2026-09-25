@@ -574,7 +574,7 @@ footer a { color:var(--whatsapp);text-decoration:none; }
       <svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.912 5.813a2 2 0 0 0 1.275 1.275L21 12l-5.813 1.912a2 2 0 0 0-1.275 1.275L12 21l-1.912-5.813a2 2 0 0 0-1.275-1.275L3 12l5.813-1.912a2 2 0 0 0 1.275-1.275L12 3z"/></svg>
       </div>
       <h3>Estética que perdura</h3>
-      <p>Tablero RH con acabado mate anti-huellas. En la configuración de 2 monitores, el tablero es de 3 cm.</p>
+      <p>Tablero RH con acabado mate anti-huellas. En la configuración de 2 monitores, el tablero es de 2,5 cm (25 mm).</p>
     </div>
     <div class="design-card reveal">
       <div class="design-icon-wrap" style="background:linear-gradient(135deg, rgba(37,99,235,0.1), rgba(192,90,58,0.06));">
@@ -597,7 +597,7 @@ footer a { color:var(--whatsapp);text-decoration:none; }
       <div class="spec-row"><span class="spec-label">Medidas abierto</span><span class="spec-value">120 × 60 cm</span></div>
       <div class="spec-row"><span class="spec-label">Profundidad cerrado</span><span class="spec-value">15 cm</span></div>
       <div class="spec-row"><span class="spec-label">Peso</span><span class="spec-value">14–22 kg</span></div>
-      <div class="spec-row"><span class="spec-label">Material</span><span class="spec-value">Tablero RH 18 mm · 30 mm en 2 monitores</span></div>
+      <div class="spec-row"><span class="spec-label">Material</span><span class="spec-value">Tablero RH 18 mm · 25 mm en 2 monitores</span></div>
       <div class="spec-row"><span class="spec-label">Capacidad</span><span class="spec-value">50 kg distribuidos</span></div>
       <div class="spec-row"><span class="spec-label">Acabado</span><span class="spec-value">5 colores mate anti-huellas</span></div>
       <div class="spec-row"><span class="spec-label">Instalación</span><span class="spec-value">Kit incluido, 20–30 min</span></div>
@@ -663,7 +663,7 @@ footer a { color:var(--whatsapp);text-decoration:none; }
         <button type="button" class="option-card" aria-pressed="false" onclick="selectMonitorCount(2)" id="mc2">
           <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="14" height="10" rx="1.5"/><rect x="9" y="4" width="14" height="10" rx="1.5"/><line x1="6" y1="18" x2="12" y2="18"/><line x1="8" y1="14" x2="8" y2="18"/><line x1="14" y1="18" x2="20" y2="18"/><line x1="17" y1="14" x2="17" y2="18"/></svg>
           <p class="card-title">Dos Monitores</p>
-          <p class="card-desc">Máxima productividad para multitarea · tablero de 3 cm.</p>
+          <p class="card-desc">Máxima productividad para multitarea · tablero de 2,5 cm (25 mm).</p>
           <p class="card-price">Desde $450</p>
         </button>
       </div>
@@ -1051,8 +1051,13 @@ function selectColor(id) {
 function calcPrice() {
   if (!monitorCount || !sizeLeft || !selectedColor) return 0;
   let total = BASE[monitorCount];
-  total += SIZES[sizeLeft].adj;
-  if (monitorCount === 2 && sizeRight) total += SIZES[sizeRight].adj;
+  if (monitorCount === 1) {
+    total += SIZES[sizeLeft].adj;
+  } else if (sizeRight) {
+    // Estrategia comercial: el ajuste dual se calcula por el monitor de mayor tamaño,
+    // evitando duplicar el recargo y manteniendo un precio más competitivo.
+    total += Math.max(SIZES[sizeLeft].adj, SIZES[sizeRight].adj);
+  }
   const colorObj = COLORS.find(c => c.id === selectedColor);
   if (colorObj) total += colorObj.adj;
   return total;
@@ -1098,7 +1103,7 @@ function showSummary() {
   // Rows
   const rows = document.getElementById('summaryRows');
   let rHtml = '';
-  rHtml += `<div class="summary-row"><span>Precio base (${monitorCount === 1 ? '1 monitor' : '2 monitores · tablero 3 cm'})</span><span>$${BASE[monitorCount]}</span></div>`;
+  rHtml += `<div class="summary-row"><span>Precio base (${monitorCount === 1 ? '1 monitor' : '2 monitores · tablero 2,5 cm (25 mm)'})</span><span>$${BASE[monitorCount]}</span></div>`;
   if (monitorCount === 1 && SIZES[sizeLeft].adj > 0) {
     rHtml += `<div class="summary-row"><span>Ajuste tamaño ${SIZES[sizeLeft].label}</span><span>+$${SIZES[sizeLeft].adj}</span></div>`;
   }
