@@ -4,6 +4,28 @@ Todas las versiones notables de este proyecto están documentadas aquí.
 
 ---
 
+## [v16.0.0] — 2026-09-25
+
+### Cambiado
+- Replanteado el hero con una propuesta de valor más directa: “Tu escritorio cuando lo necesitas. Tu pared cuando no.”
+- CTA principal actualizado a “Configurar mi ALITOSHI” y precio de entrada visible “Desde $199”.
+- Eliminada la barra de countdown promocional generado dinámicamente.
+- Eliminado el contador de visitantes simulado para evitar señales de urgencia o prueba social no verificadas.
+- Retirado “Rastrear Pedido” del menú principal para mantener el foco de navegación en descubrimiento y configuración.
+- Añadido CTA fijo en móvil después de abandonar el hero.
+- Añadida compatibilidad con prefers-reduced-motion.
+- Añadido marcado estructurado Product con marca y rango de precios para SEO.
+- Añadidos eventos básicos en dataLayer para CTA, configurador, colores, FAQ y WhatsApp.
+- Actualizada la meta description para eliminar la afirmación no verificada de “Envío gratis”.
+
+### Verificado
+- Sin referencias a marcas de terceros.
+- Precio base mantiene $199.
+- Garantía mantiene 1 año.
+- Videos embebidos en Base64 se mantienen sin migración de arquitectura.
+- No se modificó la lógica de precios existente del configurador.
+
+
 ## [v3.0.0] — 2026-09-18
 
 ### Agregado
