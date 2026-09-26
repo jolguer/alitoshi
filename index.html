@@ -120,7 +120,9 @@ body {
 .video-placeholder .placeholder-label svg { opacity:.4; }
 
 /* ── Premium product motion ── */
-.product-demo{width:100%;aspect-ratio:16/10;border-radius:24px;overflow:hidden;position:relative;background:linear-gradient(145deg,#eee7df,#d9d0c7);border:1px solid rgba(33,28,24,.08);box-shadow:0 24px 70px rgba(33,28,24,.14)}
+.product-demo{width:100%;aspect-ratio:16/10;border-radius:24px;overflow:hidden;position:relative;background:linear-gradient(145deg,#eee7df,#d9d0c7);border:1px solid rgba(33,28,24,.08);box-shadow:0 24px 70px rgba(33,28,24,.14)}\n.product-demo-photo{background:#e8ded2;box-shadow:0 24px 70px rgba(33,28,24,.16)}
+.product-demo-photo img{display:block;width:100%;height:100%;object-fit:cover;object-position:center;border-radius:inherit}
+.product-demo-photo figcaption{position:absolute;left:18px;bottom:16px;padding:8px 12px;border-radius:999px;background:rgba(20,17,15,.72);backdrop-filter:blur(10px);color:#fff;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
 .product-demo:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 25% 15%,rgba(255,255,255,.8),transparent 32%),radial-gradient(circle at 80% 85%,rgba(182,83,56,.12),transparent 38%)}
 .demo-wall{position:absolute;inset:9% 9%;border-radius:18px;background:#d5cdc3}
 .demo-frame{position:absolute;left:16%;right:16%;top:17%;height:43%;border-radius:12px;background:#181716;box-shadow:0 20px 35px rgba(0,0,0,.22);animation:demoOpen 6s ease-in-out infinite;transform-origin:bottom center}
@@ -545,7 +547,10 @@ footer a { color:var(--whatsapp);text-decoration:none; }
         <span>Hasta 50 kg</span>
       </div>
     </div>
-    <div class="product-demo parallax-layer" data-parallax="0.08" animate-fade-up delay-3" aria-label="Demostración animada de ALITOSHI: cerrado, abierto y listo para trabajar"><div class="demo-wall"></div><div class="demo-frame"><div class="demo-screen"></div></div><div class="demo-desk"></div><div class="demo-monitor one"></div><div class="demo-monitor two"></div><div class="demo-caption">ALITOSHI · transforma tu espacio</div></div>
+    <figure class="product-demo product-demo-photo parallax-layer" data-parallax="0.08">
+      <img src="/Gemini_Generated_Image_uavz43uavz43uavz.jpg" alt="Escritorio plegable de pared ALITOSHI abierto y listo para trabajar" loading="eager" referrerpolicy="no-referrer">
+      <figcaption>ALITOSHI · transforma tu espacio</figcaption>
+    </figure>
   </div>
 </section>
 </div>
