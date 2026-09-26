@@ -151,6 +151,10 @@ body {
 .section-title { font-size:clamp(28px,3.5vw,42px); font-weight:700;line-height:1.15;letter-spacing:-.02em; margin-bottom:16px; }
 .section-subtitle { font-size:17px;line-height:1.7;color:var(--text-secondary); max-width:560px;margin:0 auto 24px; }
 .problem-transition { font-style:italic;font-size:18px;color:var(--text); margin-top:24px;font-weight:500; }
+.problem-product-image{margin:42px auto 0;max-width:920px;border-radius:26px;overflow:hidden;background:#f2e9df;box-shadow:0 24px 70px rgba(33,28,24,.16)}
+.problem-product-image img{display:block;width:100%;height:auto;max-height:620px;object-fit:cover;transition:transform .8s cubic-bezier(.16,1,.3,1)}
+.problem-product-image:hover img{transform:scale(1.025)}
+.problem-product-image figcaption{padding:12px 18px 15px;font-size:11px;letter-spacing:.04em;color:var(--text-secondary);background:#fff}
 
 /* ── Solution ── */
 .solution-video { max-width:900px;margin:0 auto;width:100%; aspect-ratio:16/9;background:#EDEDEA;border-radius:16px; overflow:hidden;position:relative; }
@@ -577,11 +581,15 @@ footer a { color:var(--whatsapp);text-decoration:none; }
 </div>
 
 <!-- ════════ PROBLEM ════════ -->
-<section class="section" id="mueble" style="text-align:center;">
+<section class="section problem-section" id="mueble" style="text-align:center;">
   <div class="section-narrow reveal">
     <h2 class="section-title">¿Tu escritorio ocupa más espacio del que debería?</h2>
     <p class="section-subtitle">Trabajas desde casa. Vives en un apartamento. Cada centímetro cuenta. Pero tu escritorio se queda ahí, ocupando lugar incluso cuando no lo usas.</p>
     <p class="problem-transition">ALITOSHI resuelve eso.</p>
+    <figure class="problem-product-image reveal">
+      <img src="/Gemini_Generated_Image_uavz43uavz43uavz.jpg" alt="Mueble de pared abatible ALITOSHI abierto como escritorio" loading="lazy" referrerpolicy="no-referrer">
+      <figcaption>ALITOSHI abierto: un escritorio completo cuando lo necesitas.</figcaption>
+    </figure>
   </div>
 </section>
 
