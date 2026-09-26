@@ -1055,8 +1055,8 @@ function showSummary() {
   const price = calcPrice();
   const dims = calcDimensions();
   const colorObj = COLORS.find(c => c.id === selectedColor);
+  const DOLLAR = String.fromCharCode(36);
 
-  // Preview
   const preview = document.getElementById('configPreview');
   let previewHtml = `<div class="preview-swatch" style="background:${colorObj.hex};"></div>`;
   previewHtml += `<div class="preview-text">`;
@@ -1068,322 +1068,38 @@ function showSummary() {
   previewHtml += `</div>`;
   preview.innerHTML = previewHtml;
 
-  // Rows
   const rows = document.getElementById('summaryRows');
   let rHtml = '';
-  rHtml += `<div class="summary-row"><span>Precio base (${monitorCount === 1 ? '1 monitor' : '2 monitores · tablero 2,5 cm (25 mm)'})</span><span>$${BASE[monitorCount]}</span></div>`;
+  rHtml += `<div class="summary-row"><span>Precio base (${monitorCount === 1 ? '1 monitor' : '2 monitores · tablero 2,5 cm (25 mm)'})</span><span>${DOLLAR}${BASE[monitorCount]}</span></div>`;
+
   if (monitorCount === 1 && SIZES[sizeLeft].adj > 0) {
-    rHtml += `<div class="summary-row"><span>Ajuste tamaño ${SIZES[sizeLeft].label}</span><span>+$${SIZES[sizeLeft].adj}</span></div>`;
+    rHtml += `<div class="summary-row"><span>Ajuste tamaño ${SIZES[sizeLeft].label}</span><span>+${DOLLAR}${SIZES[sizeLeft].adj}</span></div>`;
   }
+
   if (monitorCount === 2) {
     const dualAdj = Math.max(SIZES[sizeLeft].adj, SIZES[sizeRight].adj);
     const largerSize = SIZES[sizeLeft].adj >= SIZES[sizeRight].adj ? SIZES[sizeLeft].label : SIZES[sizeRight].label;
-    if (dualAdj > 0) rHtml += `<div class="summary-row"><span>Ajuste por tamaño mayor (${largerSize})</span><span>` + String.fromCharCode(36) + dualAdj + `</span></div>`
-    card.onclick = () => onSelect(k, containerId);
-    el.appendChild(card);
-  });
-}
-
-function buildColorGrid() {
-  const el = document.getElementById('colorGrid');
-  el.innerHTML = '';
-  COLORS.forEach(c => {
-    const card = document.createElement('button');
-    card.type = 'button';
-    card.className = 'color-card';
-    card.setAttribute('aria-pressed','false');
-    card.setAttribute('data-color', c.id);
-    const border = c.id === 'blanco' ? '#D5D5D0' : c.hex;
-    card.innerHTML = `
-      <div class="color-swatch" style="background:${c.hex};border-color:${border};"></div>
-      <p class="card-title">${c.name}</p>
-      <p class="card-price">${c.adj === 0 ? 'Incluido' : '+$' + c.adj}</p>
-    `;
-    card.onclick = () => selectColor(c.id);
-    el.appendChild(card);
-  });
-}
-try { buildColorGrid(); } catch(e) { console.error('ALITOSHI colorGrid error:', e); }
-
-// ── SELECT FUNCTIONS ──
-
-function selectMonitorCount(n) {
-  monitorCount = n;
-  sizeLeft = null; sizeRight = null; selectedColor = null;
-
-  // highlight
-  document.getElementById('mc1').classList.toggle('selected', n===1);
-  document.getElementById('mc1').setAttribute('aria-pressed', n===1);
-  document.getElementById('mc2').classList.toggle('selected', n===2);
-  document.getElementById('mc2').setAttribute('aria-pressed', n===2);
-
-  // show step 2
-  const s2 = document.getElementById('step2');
-  s2.style.display = '';
-  s2.classList.remove('entering');
-  void s2.offsetWidth;
-  s2.classList.add('entering');
-
-  document.getElementById('step2Title').textContent = n===1
-    ? '¿De qué tamaño es tu monitor?'
-    : '¿De qué tamaño son tus monitores?';
-
-  if (n === 1) {
-    document.getElementById('singleSizeSelector').style.display = '';
-    document.getElementById('dualSizeSelector').style.display = 'none';
-    buildSizeCards('sizeGrid1', (k) => { sizeLeft = k; highlightSize('sizeGrid1',k); onSizeSelected(); });
-  } else {
-    document.getElementById('singleSizeSelector').style.display = 'none';
-    document.getElementById('dualSizeSelector').style.display = '';
-    buildSizeCards('sizeGridL', (k) => { sizeLeft = k; highlightSize('sizeGridL',k); onSizeSelected(); });
-    buildSizeCards('sizeGridR', (k) => { sizeRight = k; highlightSize('sizeGridR',k); onSizeSelected(); });
+    if (dualAdj > 0) {
+      rHtml += `<div class="summary-row"><span>Ajuste por tamaño mayor (${largerSize})</span><span>+${DOLLAR}${dualAdj}</span></div>`;
+    }
   }
 
-  // hide later steps
-  document.getElementById('step3').style.display = 'none';
-  document.getElementById('stepSummary').style.display = 'none';
-
-  setTimeout(() => s2.scrollIntoView({behavior:'smooth',block:'center'}), 100);
-}
-
-function highlightSize(containerId, selected) {
-  const cards = document.getElementById(containerId).querySelectorAll('.option-card');
-  cards.forEach(c => {
-    const isSel = c.getAttribute('data-size') === selected;
-    c.classList.toggle('selected', isSel);
-    c.setAttribute('aria-pressed', isSel);
-  });
-}
-
-function onSizeSelected() {
-  const ready = monitorCount === 1 ? sizeLeft !== null
-    : (sizeLeft !== null && sizeRight !== null);
-  if (!ready) return;
-
-  // show step 3 (color)
-  const s3 = document.getElementById('step3');
-  s3.style.display = '';
-  s3.classList.remove('entering');
-  void s3.offsetWidth;
-  s3.classList.add('entering');
-
-  // reset color selection
-  selectedColor = null;
-  document.querySelectorAll('#colorGrid .color-card').forEach(c => {
-    c.classList.remove('selected');
-    c.setAttribute('aria-pressed','false');
-  });
-  document.getElementById('stepSummary').style.display = 'none';
-
-  setTimeout(() => s3.scrollIntoView({behavior:'smooth',block:'center'}), 100);
-}
-
-function selectColor(id) {
-  selectedColor = id;
-  document.querySelectorAll('#colorGrid .color-card').forEach(c => {
-    const isSel = c.getAttribute('data-color') === id;
-    c.classList.toggle('selected', isSel);
-    c.setAttribute('aria-pressed', isSel);
-  });
-  showSummary();
-}
-
-// ── CALCULATIONS ──
-
-function calcPrice() {
-  if (!monitorCount || !sizeLeft || !selectedColor) return 0;
-  let total = BASE[monitorCount];
-  if (monitorCount === 1) {
-    total += SIZES[sizeLeft].adj;
-  } else if (sizeRight) {
-    // Estrategia comercial: el ajuste dual se calcula por el monitor de mayor tamaño,
-    // evitando duplicar el recargo y manteniendo un precio más competitivo.
-    total += Math.max(SIZES[sizeLeft].adj, SIZES[sizeRight].adj);
-  }
-  const colorObj = COLORS.find(c => c.id === selectedColor);
-  if (colorObj) total += colorObj.adj;
-  return total;
-}
-
-function calcOrderTotal() { return calcPrice() + SHIPPING; }
-
-function calcDimensions() {
-  const m1 = SIZES[sizeLeft];
-  if (monitorCount === 1) {
-    return { w: Math.round(m1.w + 15), h: Math.round(m1.h + 20) };
-  }
-  const m2 = SIZES[sizeRight];
-  return {
-    w: Math.round(m1.w + m2.w + 20 + 15),
-    h: Math.round(Math.max(m1.h, m2.h) + 20),
-  };
-}
-
-// ── SUMMARY ──
-
-function showSummary() {
-  const sum = document.getElementById('stepSummary');
-  sum.style.display = '';
-  sum.classList.remove('entering');
-  void sum.offsetWidth;
-  sum.classList.add('entering');
-
-  const price = calcPrice();
-  const dims = calcDimensions();
-  const colorObj = COLORS.find(c => c.id === selectedColor);
-
-  // Preview
-  const preview = document.getElementById('configPreview');
-  let previewHtml = `<div class="preview-swatch" style="background:${colorObj.hex};"></div>`;
-  previewHtml += `<div class="preview-text">`;
-  if (monitorCount === 1) {
-    previewHtml += `<strong>${SIZES[sizeLeft].label}</strong> · ${colorObj.name}`;
-  } else {
-    previewHtml += `<strong>${SIZES[sizeLeft].label} + ${SIZES[sizeRight].label}</strong> · ${colorObj.name}`;
-  }
-  previewHtml += `</div>`;
-  preview.innerHTML = previewHtml;
-
-  // Rows
-  const rows = document.getElementById('summaryRows');
-  let rHtml = '';
-  rHtml += `<div class="summary-row"><span>Precio base (${monitorCount === 1 ? '1 monitor' : '2 monitores · tablero 2,5 cm (25 mm)'})</span><span>$${BASE[monitorCount]}</span></div>`;
-  if (monitorCount === 1 && SIZES[sizeLeft].adj > 0) {
-    rHtml += `<div class="summary-row"><span>Ajuste tamaño ${SIZES[sizeLeft].label}</span><span>+$${SIZES[sizeLeft].adj}</span></div>`;
-  }
-  if (monitorCount === 2) {
-    const dualAdj = Math.max(SIZES[sizeLeft].adj, SIZES[sizeRight].adj);
-    const largerSize = SIZES[sizeLeft].adj >= SIZES[sizeRight].adj ? SIZES[sizeLeft].label : SIZES[sizeRight].label;
-    if (dualAdj > 0) rHtml +=  + dualAdj + `</span></div>`;
-  }
   if (colorObj.adj > 0) {
-    rHtml += `<div class="summary-row"><span>Acabado ${colorObj.name}</span><span>+$${colorObj.adj}</span></div>`;
+    rHtml += `<div class="summary-row"><span>Acabado ${colorObj.name}</span><span>+${DOLLAR}${colorObj.adj}</span></div>`;
   }
-  rHtml += `<div class="summary-row"><span>Envío a todo Ecuador</span><span>$${SHIPPING}</span></div>`;
-  rHtml += `<div class="summary-row total"><span>Total estimado</span><span id="totalPrice">$${calcOrderTotal()}</span></div>`;
+
+  rHtml += `<div class="summary-row"><span>Envío a todo Ecuador</span><span>${DOLLAR}${SHIPPING}</span></div>`;
+  rHtml += `<div class="summary-row total"><span>Total estimado</span><span id="totalPrice">${DOLLAR}${calcOrderTotal()}</span></div>`;
   rows.innerHTML = rHtml;
 
-  // Dimensions
   document.getElementById('summaryDims').innerHTML = `
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
     Medidas aproximadas del mueble: <strong>${dims.w} × ${dims.h} cm</strong>
   `;
 
-  // Buy button
   const btn = document.getElementById('buyBtn');
-  btn.textContent = 'Solicitar esta configuración — ' + String.fromCharCode(36) + calcOrderTotal();
-  tp.classList.remove('price-pulse');
-  void tp.offsetWidth;
-  tp.classList.add('price-pulse');
+  btn.textContent = 'Solicitar esta configuración — ' + DOLLAR + calcOrderTotal();
 
-  setTimeout(() => sum.scrollIntoView({behavior:'smooth',block:'center'}), 100);
-}
-
-// ── CHECKOUT ──
-
-function showOrderIntent() {
-  const price = calcOrderTotal();
-  const colorObj = COLORS.find(c => c.id === selectedColor);
-  let label = monitorCount === 1 ? "1 monitor " + SIZES[sizeLeft].label : "2 monitores (" + SIZES[sizeLeft].label + " + " + SIZES[sizeRight].label + ")";
-  label += " · " + colorObj.name;
-  document.getElementById("intentConfig").textContent = "ALITOSHI · " + label;
-  document.getElementById("intentPrice").textContent = "$" + price;
-  document.getElementById("copyOrderStatus").textContent = "";
-  document.getElementById("orderIntentModal").classList.add("open");
-  document.body.style.overflow = "hidden";
-}
-function closeOrderIntent() { document.getElementById("orderIntentModal").classList.remove("open"); document.body.style.overflow = ""; }
-function copyOrderSummary() {
-  const colorObj = COLORS.find(c => c.id === selectedColor);
-  const label = monitorCount === 1 ? "1 monitor " + SIZES[sizeLeft].label : "2 monitores (" + SIZES[sizeLeft].label + " + " + SIZES[sizeRight].label + ")";
-  const text = "ALITOSHI — " + label + " — " + colorObj.name + " — Producto: $" + calcPrice() + " — Envío: $" + SHIPPING + " — Total estimado: $" + calcOrderTotal();
-  navigator.clipboard.writeText(text).then(function(){ document.getElementById("copyOrderStatus").textContent="Resumen copiado."; }).catch(function(){ document.getElementById("copyOrderStatus").textContent="No se pudo copiar automáticamente."; });
-}
-try { document.getElementById("orderIntentModal").addEventListener("click",function(e){if(e.target===e.currentTarget)closeOrderIntent();}); } catch(e) {}
-
-// ── NAVBAR ──
-try {
-  window.addEventListener('scroll', () => {
-    const nb = document.getElementById('navbar');
-    if (nb) nb.classList.toggle('scrolled', window.scrollY > 20);
-  });
-} catch(e) { console.error('ALITOSHI navbar scroll error:', e); }
-
-// ── MOBILE MENU ──
-const hamburger = document.getElementById('hamburgerBtn');
-const mobileMenu = document.getElementById('mobileMenu');
-try {
-  if (hamburger && mobileMenu) {
-    hamburger.addEventListener('click', () => {
-      hamburger.classList.toggle('active');
-      mobileMenu.classList.toggle('open');
-      document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
-    });
-  }
-} catch(e) { console.error('ALITOSHI hamburger error:', e); }
-function closeMobile() {
-  try {
-    if (hamburger) hamburger.classList.remove('active');
-    if (mobileMenu) mobileMenu.classList.remove('open');
-    document.body.style.overflow = '';
-  } catch(e) { console.error('ALITOSHI closeMobile error:', e); }
-}
-
-// ── SCROLL REVEAL ──
-try {
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
-  }, { threshold:.15 });
-  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-} catch(e) { console.error('ALITOSHI scroll reveal error:', e); }
-
-// ── FAQ ──
-function toggleFaq(btn) { btn.parentElement.classList.toggle('open'); }
-
-// Conversion and mobile UX
-(function(){
-  try {
-    const sticky=document.getElementById('mobileStickyCta'), hero=document.getElementById('hero');
-    if(sticky&&hero){const update=()=>sticky.classList.toggle('visible',window.scrollY>hero.offsetHeight*.65);window.addEventListener('scroll',update,{passive:true});update();}
-    const track=(name,detail)=>{window.dataLayer=window.dataLayer||[];window.dataLayer.push(Object.assign({event:name},detail||{}));};
-    document.querySelectorAll('a[href="#comprar"]').forEach(el=>el.addEventListener('click',()=>track('cta_click',{label:el.textContent.trim()})));
-    document.querySelectorAll('.option-card').forEach(el=>el.addEventListener('click',()=>track('config_option_click',{label:el.textContent.trim()})));
-    document.querySelectorAll('.color-card').forEach(el=>el.addEventListener('click',()=>track('config_color_click',{label:el.textContent.trim()})));
-    document.querySelectorAll('.faq-question').forEach(el=>el.addEventListener('click',()=>track('faq_open',{label:el.textContent.trim()})));
-    document.querySelectorAll('.btn-whatsapp').forEach(el=>el.addEventListener('click',()=>track('whatsapp_click')));
-  } catch(e) { console.error('ALITOSHI UX error:',e); }
-})();
-
-// ── Subtle parallax: desktop only, disabled for reduced motion ──
-(function(){
-  const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const desktop=window.matchMedia('(min-width: 769px)').matches;
-  if(reduce || !desktop) return;
-  const layers=[...document.querySelectorAll('[data-parallax]')];
-  if(!layers.length) return;
-  let ticking=false;
-  function update(){
-    const vh=window.innerHeight;
-    layers.forEach(el=>{
-      const speed=parseFloat(el.dataset.parallax||'0.08');
-      const rect=el.getBoundingClientRect();
-      const center=rect.top+rect.height/2;
-      const offset=(center-vh/2)*speed*-0.18;
-      el.style.transform='translate3d(0,'+offset.toFixed(2)+'px,0)';
-    });
-    ticking=false;
-  }
-  window.addEventListener('scroll',()=>{if(!ticking){requestAnimationFrame(update);ticking=true;}},{passive:true});
-  window.addEventListener('resize',update,{passive:true});
-  update();
-})();
-</script>
-</body>
-</html>
-<!-- commercial validation: v16.3.1 -->
- + calcOrderTotal();
-
-  // Price pulse
   const tp = document.getElementById('totalPrice');
   tp.classList.remove('price-pulse');
   void tp.offsetWidth;
