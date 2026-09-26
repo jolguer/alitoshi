@@ -34,7 +34,7 @@
   "@graph":[
     {"@type":"Organization","@id":"https://web.bursatil.ec/#organization","name":"ALITOSHI","url":"https://web.bursatil.ec/","logo":"https://web.bursatil.ec/#logo"},
     {"@type":"WebSite","@id":"https://web.bursatil.ec/#website","url":"https://web.bursatil.ec/","name":"ALITOSHI","publisher":{"@id":"https://web.bursatil.ec/#organization"},"inLanguage":"es-EC"},
-    {"@type":"Product","@id":"https://web.bursatil.ec/#product","name":"ALITOSHI Escritorio Plegable de Pared","brand":{"@type":"Brand","name":"ALITOSHI"},"category":"Escritorio plegable de pared","description":"Escritorio plegable de pared para home office y espacios pequeños, configurable para uno o dos monitores.","url":"https://web.bursatil.ec/","offers":{"@type":"Offer","url":"https://web.bursatil.ec/#comprar","priceCurrency":"USD","price":"$199","priceValidUntil":"2027-12-31","availability":"https://schema.org/InStock","itemCondition":"https://schema.org/NewCondition","shippingDetails":{"@type":"OfferShippingDetails","shippingRate":{"@type":"MonetaryAmount","value":"$20","currency":"USD"},"shippingDestination":{"@type":"DefinedRegion","addressCountry":"EC"}}}}
+    {"@type":"Product","@id":"https://web.bursatil.ec/#product","name":"ALITOSHI Escritorio Plegable de Pared","brand":{"@type":"Brand","name":"ALITOSHI"},"category":"Escritorio plegable de pared","description":"Escritorio plegable de pared para home office y espacios pequeños, configurable para uno o dos monitores.","url":"https://web.bursatil.ec/","offers":{"@type":"Offer","url":"https://web.bursatil.ec/#comprar","priceCurrency":"USD","price":199,"priceValidUntil":"2027-12-31","availability":"https://schema.org/InStock","itemCondition":"https://schema.org/NewCondition","shippingDetails":{"@type":"OfferShippingDetails","shippingRate":{"@type":"MonetaryAmount","value":20,"currency":"USD"},"shippingDestination":{"@type":"DefinedRegion","addressCountry":"EC"}}}}
   ]
 }
 </script>
@@ -800,7 +800,7 @@ if (!CanvasRenderingContext2D.prototype.roundRect) {
 // ── DATA ──
 const SIZES = {
   '22': { w:48.7, h:27.4, label:'22"', adj:0 },
-  '24': { w:53.1, h:29.9, label:'24"', adj:$20 },
+  '24': { w:53.1, h:29.9, label:'24"', adj:20 },
   '27': { w:54.9, h:33.6, label:'27"', adj:40 },
   '32': { w:70.8, h:39.9, label:'32"', adj:70 },
 };
@@ -811,8 +811,8 @@ const COLORS = [
   { id:'nogal',   name:'Nogal Oscuro',   hex:'#5C4033', adj:15 },
   { id:'gris',    name:'Gris Cemento',   hex:'#8E8E8E', adj:10 },
 ];
-const BASE = { 1:$199, 2:$450 };
-const SHIPPING = $20;
+const BASE = { 1:199, 2:450 };
+const SHIPPING = 20;
 // ── STATE ──
 let monitorCount = null;
 let sizeLeft = null;
@@ -833,7 +833,7 @@ function buildSizeCards(containerId, onSelect, stateGetter) {
     card.setAttribute('aria-pressed','false');
     card.setAttribute('data-size', k);
     card.innerHTML = `
-      <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="$20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+      <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
       <p class="card-title">${s.label}</p>
       <p class="card-badge">${s.w} × ${s.h} cm</p>
       <p class="card-price">${s.adj === 0 ? 'Incluido' : '+$' + s.adj}</p>
@@ -969,12 +969,12 @@ function calcOrderTotal() { return calcPrice() + SHIPPING; }
 function calcDimensions() {
   const m1 = SIZES[sizeLeft];
   if (monitorCount === 1) {
-    return { w: Math.round(m1.w + 15), h: Math.round(m1.h + $20) };
+    return { w: Math.round(m1.w + 15), h: Math.round(m1.h + 20) };
   }
   const m2 = SIZES[sizeRight];
   return {
-    w: Math.round(m1.w + m2.w + $20 + 15),
-    h: Math.round(Math.max(m1.h, m2.h) + $20),
+    w: Math.round(m1.w + m2.w + 20 + 15),
+    h: Math.round(Math.max(m1.h, m2.h) + 20),
   };
 }
 
@@ -1067,7 +1067,7 @@ try { document.getElementById("orderIntentModal").addEventListener("click",funct
 try {
   window.addEventListener('scroll', () => {
     const nb = document.getElementById('navbar');
-    if (nb) nb.classList.toggle('scrolled', window.scrollY > $20);
+    if (nb) nb.classList.toggle('scrolled', window.scrollY > 20);
   });
 } catch(e) { console.error('ALITOSHI navbar scroll error:', e); }
 
