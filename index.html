@@ -894,7 +894,7 @@ let monitorCount = null;
 let sizeLeft = null;
 let sizeRight = null;
 let selectedColor = null;
-let selectedArtwork = 'Líneas';
+let selectedArtwork = 'none';
 
 // ── INIT: Build size grids & color grid ──
 const sizeKeys = ['22','24','27','32'];
@@ -1041,7 +1041,7 @@ function calcPrice() {
   return total;
 }
 
-function calcOrderTotal() { return calcPrice() + SHIPPING + 30; }
+function calcOrderTotal() { return calcPrice() + SHIPPING + (selectedArtwork === 'none' ? 0 : 30); }
 
 function calcDimensions() {
   const m1 = SIZES[sizeLeft];
@@ -1100,7 +1100,7 @@ function showSummary() {
     rHtml += `<div class="summary-row"><span>Acabado ${colorObj.name}</span><span>+${DOLLAR}${colorObj.adj}</span></div>`;
   }
 
-  rHtml += `<div class="summary-row"><span>Personalización de tapa</span><span>+${DOLLAR}30</span></div>`;
+  if (selectedArtwork !== 'none') rHtml += `<div class="summary-row"><span>Personalización de tapa</span><span>+${DOLLAR}30</span></div>`;
   rHtml += `<div class="summary-row"><span>Envío a todo Ecuador</span><span>${DOLLAR}${SHIPPING}</span></div>`;
   rHtml += `<div class="summary-row total"><span>Total estimado</span><span id="totalPrice">${DOLLAR}${calcOrderTotal()}</span></div>`;
   rows.innerHTML = rHtml;
@@ -1234,7 +1234,7 @@ function toggleFaq(btn) { btn.parentElement.classList.toggle('open'); }
  const products=[['Negro Mate','#1A1A1A'],['Blanco Nieve','#F0EDE8'],['Roble Natural','#C4A882'],['Nogal Oscuro','#5C4033'],['Gris Cemento','#8E8E8E']],walls=[['Arena','#D8C8B8'],['Marfil','#EEE8DE'],['Salvia','#AEB9A6'],['Azul humo','#9AA9B5'],['Carbón','#4C4844']],arts=[['Líneas','Minimalismo cálido','linear-gradient(135deg,#efe4d7,#b95f43)'],['Botánica','Verde natural','linear-gradient(135deg,#dfe5d9,#6f8668)'],['Geometría','Contemporánea','linear-gradient(135deg,#e8d8c7,#59626a)'],['Andino','Inspiración ecuatoriana','linear-gradient(135deg,#d8b27d,#7d4f3b)'],['Abstracto','Arte expresivo','linear-gradient(135deg,#9b6757,#302e2c)'],['Monocromo','Sobrio y elegante','linear-gradient(135deg,#f1eee8,#252321)']];
  function swatches(items,id,type){const el=document.getElementById(id);if(!el)return;items.forEach((x,i)=>{const b=document.createElement('button');b.className='scene-swatch';b.type='button';b.title=x[0];b.setAttribute('aria-label',x[0]);b.setAttribute('aria-pressed',i===0);b.style.background=x[1];b.onclick=()=>{el.querySelectorAll('button').forEach(z=>z.setAttribute('aria-pressed','false'));b.setAttribute('aria-pressed','true');if(type==='product'){document.getElementById('flagshipDesk').style.background=x[1];document.getElementById('flagshipFrame').style.background=x[1];document.getElementById('flagshipFrame').style.borderColor=x[1]}else document.getElementById('flagshipWall').style.background=x[1]};el.appendChild(b)})}
  swatches(products,'productColorControls','product');swatches(walls,'wallColorControls','wall');
- const ao=document.getElementById('artOptions'),artwork=document.getElementById('artwork');arts.forEach((x,i)=>{const b=document.createElement('button');b.type='button';b.className='art-option'+(i===0?' selected':'');b.innerHTML='<div class="art-thumb" style="background:'+x[2]+'">'+x[0]+'</div><strong>'+x[0]+'</strong><span>'+x[1]+' · +$30</span>';b.onclick=()=>{ao.querySelectorAll('.art-option').forEach(z=>z.classList.remove('selected'));b.classList.add('selected');selectedArtwork=x[0];artwork.style.background=x[2];artwork.textContent=x[0]};ao.appendChild(b)});artwork.style.background=arts[0][2];
+ const ao=document.getElementById('artOptions'),artwork=document.getElementById('artwork');arts.forEach((x,i)=>{const b=document.createElement('button');b.type='button';b.className='art-option'+(i===0?' selected':'');b.innerHTML='<div class="art-thumb" style="background:'+x[2]+'">'+x[0]+'</div><strong>'+x[0]+'</strong><span>'+x[1]+' · +$30</span>';b.onclick=()=>{ao.querySelectorAll('.art-option').forEach(z=>z.classList.remove('selected'));b.classList.add('selected');selectedArtwork=(x[0]==='Sin personalización'?'none':x[0]);artwork.style.background=x[2];artwork.textContent=x[0]};ao.appendChild(b)});artwork.style.background=arts[0][2];
 })();
 </script>
 </body>
